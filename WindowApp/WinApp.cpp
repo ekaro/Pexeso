@@ -17,6 +17,18 @@ LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 // Declaration of Button3 for WM_CREATE;
 HWND Button3;
 
+// Colors
+HBRUSH hBrushBlack = CreateSolidBrush(RGB(0, 0, 0));
+COLORREF Black = (RGB(0, 0, 0));
+COLORREF White = (RGB(255, 255, 255));
+COLORREF Red = (RGB(255, 0, 0));
+
+// Window properties
+int Width = 500;
+int Height = 500;
+RECT WindowRect;
+
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	WNDCLASSEX wcex;
@@ -29,7 +41,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	wcex.hInstance = hInstance;
 	wcex.hIcon = LoadIcon(hInstance, IDI_APPLICATION);
 	wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
-	wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+	// wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+	wcex.hbrBackground = hBrushBlack;
 	wcex.lpszMenuName = NULL;
 	wcex.lpszClassName = szWindowClass;
 	wcex.hIconSm = LoadIcon(wcex.hInstance, IDI_APPLICATION);
@@ -59,7 +72,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		szTitle,
 		WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT, CW_USEDEFAULT,
-		500, 500,
+		Width, Height,
 		NULL,
 		NULL,
 		hInstance,
@@ -86,8 +99,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,  // Styles 
 		200,         // x position 
 		100,         // y position 
-		100,        // Button width
-		100,        // Button height
+		Width/5,        // Button width
+		Height/5,        // Button height
 		hWnd,     // Parent window
 		NULL,       // No menu.
 		(HINSTANCE)GetWindowLong(hWnd, GWL_HINSTANCE),
@@ -135,9 +148,23 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		// Here your application is laid out.
 		// For this introduction, we just print out display message
 		// in the top left corner.
+		SetTextColor(hdc, RGB(255, 0, 0)); 
+		SetBkColor(hdc, RGB(0, 0, 0));
 		TextOut(hdc, 5, 5, display_msg, _tcslen(display_msg));
 		// End application-specific layout section.
+		
+		// Resing window
+		::GetWindowRect(hWnd, &WindowRect);
+		Width = WindowRect.right - WindowRect.left;
+		Height = WindowRect.bottom - WindowRect.top;
 
+		//    Select DC_BRUSH so you can change the brush color from the 
+		//    default WHITE_BRUSH to any other color
+		SelectObject(hdc, GetStockObject(DC_BRUSH));
+		SetDCBrushColor(hdc, Red);
+		
+		Rectangle(hdc, 0, 0, Width/5, Height/5);
+		
 		EndPaint(hWnd, &ps);
 		break;
 
