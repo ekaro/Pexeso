@@ -3,10 +3,6 @@
 #include <string.h>
 #include <tchar.h>
 #include <Windowsx.h>
-#include <iostream>
-#include <stdio.h>
-#include <stdarg.h>
-#include <ctype.h>
 
 // Global variables
 
