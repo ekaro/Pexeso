@@ -2,6 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <tchar.h>
+#include <Windowsx.h>
+#include <iostream>
+#include <stdio.h>
+#include <stdarg.h>
+#include <ctype.h>
 
 // Global variables
 
@@ -24,10 +29,36 @@ COLORREF White = (RGB(255, 255, 255));
 COLORREF Red = (RGB(255, 0, 0));
 
 // Window properties
-int Width = 500;
-int Height = 500;
+int WindowWidth = 500;
+int WindowHeight = 600;
 RECT WindowRect;
 
+int xPos;
+int yPos;
+
+void DrawCards(HDC handle, int CardWidth, int CardHeight)
+{
+	int left = 0;
+	int top = 0;
+	int right = CardWidth;
+	int bottom = CardHeight;
+	int rows = 4;
+	int columns = 5;
+	
+	for (int i = 0; i < rows; i++)
+	{
+		for (int j = 0; j < columns; j++)
+		{
+			Rectangle(handle, left, top, right, bottom);
+			left += CardWidth;
+			right += CardWidth;
+		}
+		left = 0;
+		top += CardHeight;
+		right = CardWidth;
+		bottom += CardHeight;	
+	}
+}
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -72,12 +103,25 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		szTitle,
 		WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT, CW_USEDEFAULT,
-		Width, Height,
+		WindowWidth, WindowHeight,
 		NULL,
 		NULL,
 		hInstance,
 		NULL
 	);
+
+	if (IsWindow(hWnd))
+	{
+		DWORD dwStyle = GetWindowLongPtr(hWnd, GWL_STYLE);
+		DWORD dwExStyle = GetWindowLongPtr(hWnd, GWL_EXSTYLE);
+		HMENU menu = GetMenu(hWnd);
+
+		RECT rc = { 0, 0, WindowWidth, WindowHeight };
+
+		AdjustWindowRectEx(&rc, dwStyle, menu ? TRUE : FALSE, dwExStyle);
+
+		SetWindowPos(hWnd, NULL, 0, 0, rc.right - rc.left, rc.bottom - rc.top, SWP_NOZORDER | SWP_NOMOVE);
+	}
 
 	HWND Button1 = CreateWindow(
 		L"BUTTON",  // Predefined class; Unicode assumed 
@@ -99,8 +143,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,  // Styles 
 		200,         // x position 
 		100,         // y position 
-		Width/5,        // Button width
-		Height/5,        // Button height
+		WindowWidth/5,        // Button width
+		WindowHeight/5,        // Button height
 		hWnd,     // Parent window
 		NULL,       // No menu.
 		(HINSTANCE)GetWindowLong(hWnd, GWL_HINSTANCE),
@@ -154,16 +198,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		// End application-specific layout section.
 		
 		// Resing window
-		::GetWindowRect(hWnd, &WindowRect);
-		Width = WindowRect.right - WindowRect.left;
-		Height = WindowRect.bottom - WindowRect.top;
+		::GetClientRect(hWnd, &WindowRect);
+		WindowWidth = WindowRect.right - WindowRect.left;
+		WindowHeight = WindowRect.bottom - WindowRect.top;
 
 		//    Select DC_BRUSH so you can change the brush color from the 
 		//    default WHITE_BRUSH to any other color
 		SelectObject(hdc, GetStockObject(DC_BRUSH));
 		SetDCBrushColor(hdc, Red);
 		
-		Rectangle(hdc, 0, 0, Width/5, Height/5);
+		// Rectangle(hdc, 0, 0, Width/5, Height/5);
+		DrawCards(hdc, WindowWidth/5, WindowHeight/4);
 		
 		EndPaint(hWnd, &ps);
 		break;
@@ -183,6 +228,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			(HINSTANCE)GetWindowLong(hWnd, GWL_HINSTANCE),
 			NULL
 		);
+		break;
+	
+	case WM_LBUTTONDOWN:
+
+		xPos = GET_X_LPARAM(lParam);
+		yPos = GET_Y_LPARAM(lParam);
+
 		break;
 
 	case WM_DESTROY:
