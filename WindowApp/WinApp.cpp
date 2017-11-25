@@ -15,37 +15,56 @@ static TCHAR szTitle[] = _T("Window Application");
 // Forward declaration of functions included in this module:
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
-// Declaration of Button3 for WM_CREATE;
-HWND Button3;
-
 // Colors
 HBRUSH hBrushBlack = CreateSolidBrush(RGB(0, 0, 0));
 COLORREF Black = (RGB(0, 0, 0));
 COLORREF White = (RGB(255, 255, 255));
 COLORREF Red = (RGB(255, 0, 0));
+COLORREF Green = (RGB(0, 255, 0));
 
 // Window properties
+int offset = 100;
 int WindowWidth = 500;
-int WindowHeight = 600;
+int WindowHeight = 600 + offset;
 RECT WindowRect;
+
+int CardAreaWidth = WindowWidth;
+int CardAreaHeight = WindowHeight - offset;
 
 int xPos;
 int yPos;
 
-void DrawCards(HDC handle, int CardWidth, int CardHeight)
+int CurrentCardAreaWidth;
+int CurrentCardAreaHeight;
+int CardW;
+int CardH;
+int Card;
+
+// Declaration of RestartButton for WM_CREATE;
+HWND RestartButton;
+int RestartButtonWidth = 200;
+int RestartButtonHeight = offset;
+
+void DrawCards(HDC handle, int CardWidth, int CardHeight, COLORREF Color)
 {
 	int left = 0;
 	int top = 0;
 	int right = CardWidth;
 	int bottom = CardHeight;
+	
 	int rows = 4;
 	int columns = 5;
 	
+	//    Select DC_BRUSH so you can change the brush color from the 
+	//    default WHITE_BRUSH to any other color
+	SelectObject(handle, GetStockObject(DC_BRUSH));
+	SetDCBrushColor(handle, Color);
+
 	for (int i = 0; i < rows; i++)
 	{
 		for (int j = 0; j < columns; j++)
 		{
-			Rectangle(handle, left, top, right, bottom);
+			Rectangle(handle, left, top + offset, right, bottom + offset);
 			left += CardWidth;
 			right += CardWidth;
 		}
@@ -119,34 +138,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		SetWindowPos(hWnd, NULL, 0, 0, rc.right - rc.left, rc.bottom - rc.top, SWP_NOZORDER | SWP_NOMOVE);
 	}
 
-	HWND Button1 = CreateWindow(
-		L"BUTTON",  // Predefined class; Unicode assumed 
-		L"Button1",      // Button text 
-		WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,  // Styles 
-		100,         // x position 
-		100,         // y position 
-		100,        // Button width
-		100,        // Button height
-		hWnd,     // Parent window
-		NULL,       // No menu.
-		(HINSTANCE)GetWindowLong(hWnd, GWL_HINSTANCE),
-		NULL
-	);
-
-	HWND Button2 = CreateWindow(
-		L"BUTTON",  // Predefined class; Unicode assumed 
-		L"Button2",      // Button text 
-		WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,  // Styles 
-		200,         // x position 
-		100,         // y position 
-		WindowWidth/5,        // Button width
-		WindowHeight/5,        // Button height
-		hWnd,     // Parent window
-		NULL,       // No menu.
-		(HINSTANCE)GetWindowLong(hWnd, GWL_HINSTANCE),
-		NULL
-	);
-
 	if (!hWnd)
 	{
 		MessageBox(NULL,
@@ -190,35 +181,30 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		// in the top left corner.
 		SetTextColor(hdc, RGB(255, 0, 0)); 
 		SetBkColor(hdc, RGB(0, 0, 0));
-		TextOut(hdc, 5, 5, display_msg, _tcslen(display_msg));
+		TextOut(hdc, RestartButtonWidth, 10, display_msg, _tcslen(display_msg));
 		// End application-specific layout section.
 		
 		// Resing window
 		::GetClientRect(hWnd, &WindowRect);
-		WindowWidth = WindowRect.right - WindowRect.left;
-		WindowHeight = WindowRect.bottom - WindowRect.top;
-
-		//    Select DC_BRUSH so you can change the brush color from the 
-		//    default WHITE_BRUSH to any other color
-		SelectObject(hdc, GetStockObject(DC_BRUSH));
-		SetDCBrushColor(hdc, Red);
+		CardAreaWidth = WindowRect.right - WindowRect.left;
+		CardAreaHeight = WindowRect.bottom - WindowRect.top - offset;
 		
 		// Rectangle(hdc, 0, 0, Width/5, Height/5);
-		DrawCards(hdc, WindowWidth/5, WindowHeight/4);
+		DrawCards(hdc, CardAreaWidth/5, CardAreaHeight/4, Green);
 		
 		EndPaint(hWnd, &ps);
 		break;
 
 	case WM_CREATE:
 
-		Button3 = CreateWindow(
+		RestartButton = CreateWindow(
 			L"BUTTON",  // Predefined class; Unicode assumed 
-			L"Button3",      // Button text 
+			L"Restart",      // Button text 
 			WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,  // Styles 
-			300,         // x position 
-			100,         // y position 
-			100,        // Button width
-			100,        // Button height
+			0,         // x position 
+			0,         // y position 
+			RestartButtonWidth,        // Button width
+			RestartButtonHeight,        // Button height
 			hWnd,     // Parent window
 			NULL,       // No menu.
 			(HINSTANCE)GetWindowLong(hWnd, GWL_HINSTANCE),
@@ -230,6 +216,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		xPos = GET_X_LPARAM(lParam);
 		yPos = GET_Y_LPARAM(lParam);
+
+		::GetClientRect(hWnd, &WindowRect);
+		CurrentCardAreaWidth = WindowRect.right - WindowRect.left;
+		CurrentCardAreaHeight = WindowRect.bottom - WindowRect.top - offset;
+		CardW = CurrentCardAreaWidth / 5;
+		CardH = CurrentCardAreaHeight / 4;
+
+		Card = (xPos / CardW) + ((yPos - offset) / CardH) * 5;
 
 		break;
 
