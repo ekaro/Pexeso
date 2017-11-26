@@ -3,6 +3,8 @@
 #include <string.h>
 #include <tchar.h>
 #include <Windowsx.h>
+#include <algorithm>
+#include <random>
 
 // Global variables
 
@@ -26,7 +28,7 @@ COLORREF Green = (RGB(0, 255, 0));
 int offset = 100;
 int WindowWidth = 500;
 int WindowHeight = 600 + offset;
-RECT WindowRect;
+RECT ClientRect;
 
 int CardAreaWidth = WindowWidth;
 int CardAreaHeight = WindowHeight - offset;
@@ -73,6 +75,34 @@ void DrawCards(HDC handle, int CardWidth, int CardHeight, COLORREF Color)
 		right = CardWidth;
 		bottom += CardHeight;	
 	}
+}
+
+void NewGame(HDC handle, HWND hWnd)
+{
+	int Deck[20];
+	// fill up array as 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2.. (will be 10 groups)
+	for (int i = 0; i < 20; i++)
+	{
+		Deck[i] = i % 10;
+	}
+
+	// and randomly rearrange order
+	// shuffle array;
+	auto rng = std::default_random_engine{};
+	std::shuffle(std::begin(Deck), std::end(Deck), rng);
+
+	bool Exposed[20] = {false};
+	int State = 0;
+
+	// Resing window
+	::GetClientRect(hWnd, &ClientRect);
+	CurrentCardAreaWidth = ClientRect.right - ClientRect.left;
+	CurrentCardAreaHeight = ClientRect.bottom - ClientRect.top - offset;
+	CardW = CurrentCardAreaWidth / 5;
+	CardH = CurrentCardAreaHeight / 4;
+
+	// Rectangle(hdc, 0, 0, Width/5, Height/5);
+	DrawCards(handle, CardW, CardH, Green);
 }
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
@@ -185,12 +215,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		// End application-specific layout section.
 		
 		// Resing window
-		::GetClientRect(hWnd, &WindowRect);
-		CardAreaWidth = WindowRect.right - WindowRect.left;
-		CardAreaHeight = WindowRect.bottom - WindowRect.top - offset;
+		//::GetClientRect(hWnd, &ClientRect);
+		//CardAreaWidth = ClientRect.right - ClientRect.left;
+		//CardAreaHeight = ClientRect.bottom - ClientRect.top - offset;
 		
 		// Rectangle(hdc, 0, 0, Width/5, Height/5);
-		DrawCards(hdc, CardAreaWidth/5, CardAreaHeight/4, Green);
+		NewGame(hdc, hWnd);
+		// DrawCards(hdc, CardAreaWidth/5, CardAreaHeight/4, Green);
 		
 		EndPaint(hWnd, &ps);
 		break;
@@ -217,14 +248,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		xPos = GET_X_LPARAM(lParam);
 		yPos = GET_Y_LPARAM(lParam);
 
-		::GetClientRect(hWnd, &WindowRect);
-		CurrentCardAreaWidth = WindowRect.right - WindowRect.left;
-		CurrentCardAreaHeight = WindowRect.bottom - WindowRect.top - offset;
+		::GetClientRect(hWnd, &ClientRect);
+		CurrentCardAreaWidth = ClientRect.right - ClientRect.left;
+		CurrentCardAreaHeight = ClientRect.bottom - ClientRect.top - offset;
 		CardW = CurrentCardAreaWidth / 5;
 		CardH = CurrentCardAreaHeight / 4;
 
 		Card = (xPos / CardW) + ((yPos - offset) / CardH) * 5;
-
+		
 		break;
 
 	case WM_DESTROY:
