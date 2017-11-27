@@ -5,6 +5,7 @@
 #include <Windowsx.h>
 #include <algorithm>
 #include <random>
+#include "Card.h"
 
 // Global variables
 
@@ -47,8 +48,10 @@ HWND RestartButton;
 int RestartButtonWidth = 200;
 int RestartButtonHeight = offset;
 
+
 void DrawCards(HDC handle, int CardWidth, int CardHeight, COLORREF Color)
 {
+	
 	int left = 0;
 	int top = 0;
 	int right = CardWidth;
@@ -59,8 +62,8 @@ void DrawCards(HDC handle, int CardWidth, int CardHeight, COLORREF Color)
 	
 	//    Select DC_BRUSH so you can change the brush color from the 
 	//    default WHITE_BRUSH to any other color
-	SelectObject(handle, GetStockObject(DC_BRUSH));
-	SetDCBrushColor(handle, Color);
+	//SelectObject(handle, GetStockObject(DC_BRUSH));
+	//SetDCBrushColor(handle, Color);
 
 	for (int i = 0; i < rows; i++)
 	{
@@ -92,7 +95,7 @@ void NewGame(HDC handle, HWND hWnd)
 	std::shuffle(std::begin(Deck), std::end(Deck), rng);
 
 	bool Exposed[20] = {false};
-	int State = 0;
+	
 
 	// Resing window
 	::GetClientRect(hWnd, &ClientRect);
@@ -199,6 +202,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	PAINTSTRUCT ps;
 	HDC hdc;
 	TCHAR display_msg[] = _T("Message in window");
+	int State = 0;
 
 	switch (message)
 	{
