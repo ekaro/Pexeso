@@ -1,51 +1,37 @@
 #include "Deck.h"
 
-Deck::Deck(HDC hdc, int ButtonOffset)
+Deck::Deck(HWND hWnd)
 	:
-	handle(hdc),
-	offset(ButtonOffset)
+	handle(hWnd)
 {
-}
+	Cards.resize(20);
+	int num = Cards.size();
 
-void Deck::GenerateDeck()
-{
 	int index = 0;
-	int x = 0;
-	int y = offset;
-	COLORREF Green = (RGB(0, 255, 0));
 
 	for (int i = 0; i < rows; i++)
 	{
 		for (int j = 0; j < columns; j++)
 		{
-			Cards[index] = Deck::Card(x, y, Green);
-			x += Cards[index].CardWidth;
+			Cards[index].left += Cards[index].CardWidth * j;
+			Cards[index].top += Cards[index].CardHeight * i;
 			index++;
-		}
-		x = 0;
-		y += Cards[index].CardWidth;
+		}		
 	}
 }
 
 void Deck::DrawDeck(HDC hdc)
 {
-	for (int i = 0; i < rows; i++)
+	for (Card c : Cards)
 	{
-		Cards[i].DrawCard(hdc);
+		c.DrawCard(hdc);
 	}
 }
 
-Deck::Card::Card(int x, int y, COLORREF CardColor)
-	:
-	left(x),
-	top(y),
-	color(CardColor)
-{
-}
 
 void Deck::Card::DrawCard(HDC hdc)
 {
 	SelectObject(hdc, GetStockObject(DC_BRUSH));
-	SetDCBrushColor(hdc, color);
+	SetDCBrushColor(hdc, Color);
 	Rectangle(hdc, left, top, left + CardWidth, top + CardHeight);
 }

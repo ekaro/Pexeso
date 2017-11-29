@@ -5,7 +5,7 @@
 #include <Windowsx.h>
 #include <algorithm>
 #include <random>
-#include "Card.h"
+#include "Deck.h"
 
 // Global variables
 
@@ -43,8 +43,6 @@ int CardW;
 int CardH;
 int Card;
 
-// Declaration of RestartButton for WM_CREATE;
-HWND RestartButton;
 int RestartButtonWidth = 200;
 int RestartButtonHeight = offset;
 
@@ -158,6 +156,20 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		NULL
 	);
 
+	HWND RestartButton = CreateWindow(
+		L"BUTTON",  // Predefined class; Unicode assumed 
+		L"Restart",      // Button text 
+		WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,  // Styles 
+		0,         // x position 
+		0,         // y position 
+		RestartButtonWidth,        // Button width
+		RestartButtonHeight,        // Button height
+		hWnd,     // Parent window
+		NULL,       // No menu.
+		hInstance,
+		NULL
+	);
+
 	if (IsWindow(hWnd))
 	{
 		DWORD dwStyle = GetWindowLongPtr(hWnd, GWL_STYLE);
@@ -203,6 +215,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	HDC hdc;
 	TCHAR display_msg[] = _T("Message in window");
 	int State = 0;
+	Deck Deck(hWnd);
 
 	switch (message)
 	{
@@ -224,27 +237,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		//CardAreaHeight = ClientRect.bottom - ClientRect.top - offset;
 		
 		// Rectangle(hdc, 0, 0, Width/5, Height/5);
-		NewGame(hdc, hWnd);
+		//NewGame(hdc, hWnd);
 		// DrawCards(hdc, CardAreaWidth/5, CardAreaHeight/4, Green);
+	
+		Deck.DrawDeck(hdc);
 		
 		EndPaint(hWnd, &ps);
 		break;
 
 	case WM_CREATE:
-
-		RestartButton = CreateWindow(
-			L"BUTTON",  // Predefined class; Unicode assumed 
-			L"Restart",      // Button text 
-			WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,  // Styles 
-			0,         // x position 
-			0,         // y position 
-			RestartButtonWidth,        // Button width
-			RestartButtonHeight,        // Button height
-			hWnd,     // Parent window
-			NULL,       // No menu.
-			(HINSTANCE)GetWindowLong(hWnd, GWL_HINSTANCE),
-			NULL
-		);
+		
 		break;
 	
 	case WM_LBUTTONDOWN:

@@ -8,26 +8,23 @@ private:
 	class Card
 	{
 	public:
-		Card(int x, int y, COLORREF CardColor);
+		Card() = default;
 		void DrawCard(HDC hdc);
+		int offset = 100;  // offset is specified for every card because it is problematic to pass parameters from parent deck to card
+		int left = 0;
+		int top = offset;
 		int CardWidth = 100;
 		int CardHeight = 150;
-		COLORREF color;
+		COLORREF Color = (RGB(0, 255, 0));
 	private:
 		HDC handle;
-		int left;
-		int top;		
 	};
 public:
-	Deck(HDC hdc, int ButtonOffset);
-	void GenerateDeck();
+	Deck(HWND hWnd);
 	void DrawDeck(HDC hdc);
+	std::vector<Card> Cards;
 private:
-	HDC handle;
-	int offset;
-	int x;
-	int y;
+	HWND handle;
 	int rows = 4;
 	int columns = 5;
-	std::vector<Card> Cards;
 };
