@@ -215,7 +215,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	HDC hdc;
 	TCHAR display_msg[] = _T("Message in window");
 	int State = 0;
-	Deck Deck(hWnd);
+	Deck Deck(hWnd, offset);
 
 	switch (message)
 	{
