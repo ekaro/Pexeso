@@ -11,14 +11,17 @@ private:
 	{
 	public:
 		Card() = default;
-		void DrawCard(HDC hdc, int CardWidth, int CardHeight);
+		void DrawCard(HDC hdc, int CardWidth, int CardHeight, COLORREF Color);
 		int left = 0;
 		int top;
 		int CardWidth;
 		int CardHeight;
+		COLORREF Green = (RGB(0, 255, 0));
+		COLORREF Blue = (RGB(0, 0, 255));
 		COLORREF Color;
-		bool Exposed = false;
-		int Number;
+		bool Exposed;
+		int Number;	
+		//void Clicked();
 	private:
 		HDC handle;
 	};

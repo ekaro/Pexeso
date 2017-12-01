@@ -106,6 +106,16 @@ void NewGame(HDC handle, HWND hWnd)
 	DrawCards(handle, CardW, CardH, Green);
 }
 
+void Text(HDC hdc)
+{
+	SetTextColor(hdc, RGB(255, 0, 0));
+	SetBkColor(hdc, RGB(0, 0, 0));
+	TCHAR display_msg[] = _T("Message in window");
+	TextOut(hdc, RestartButtonWidth, 10, display_msg, _tcslen(display_msg));
+}
+
+
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	WNDCLASSEX wcex;
@@ -126,12 +136,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	if (!RegisterClassEx(&wcex))
 	{
-		MessageBox(NULL,
-			_T("Call to RegisterClassEx failed!"),
-			_T("Windows Desktop Guided Tour"),
-			NULL);
+MessageBox(NULL,
+	_T("Call to RegisterClassEx failed!"),
+	_T("Windows Desktop Guided Tour"),
+	NULL);
 
-		return 1;
+return 1;
 	}
 
 	// The parameters to CreateWindow explained:
@@ -169,7 +179,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		hInstance,
 		NULL
 	);
-
+	
 	if (IsWindow(hWnd))
 	{
 		DWORD dwStyle = GetWindowLongPtr(hWnd, GWL_STYLE);
@@ -198,6 +208,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// nCmdShow: the fourth parameter from WinMain
 	ShowWindow(hWnd, nCmdShow);
 	UpdateWindow(hWnd);
+	
 
 	MSG msg;
 	while (GetMessage(&msg, NULL, 0, 0))
@@ -216,6 +227,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	TCHAR display_msg[] = _T("Message in window");
 	int State = 0;
 	Deck Deck(hWnd, offset);
+	static bool Clicked = false;
 
 	switch (message)
 	{
@@ -226,9 +238,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		// Here your application is laid out.
 		// For this introduction, we just print out display message
 		// in the top left corner.
-		SetTextColor(hdc, RGB(255, 0, 0)); 
-		SetBkColor(hdc, RGB(0, 0, 0));
-		TextOut(hdc, RestartButtonWidth, 10, display_msg, _tcslen(display_msg));
+		if (Clicked == true) 
+		{
+			Text(hdc);
+		}
+		
 		// End application-specific layout section.
 		
 		// Resing window
@@ -261,6 +275,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		CardH = CurrentCardAreaHeight / 4;
 
 		Card = (xPos / CardW) + ((yPos - offset) / CardH) * 5;
+		
+		Deck.Cards[Card].Exposed = true;
+
+		Clicked = true;
+
+		InvalidateRect(hWnd, &ClientRect, true);
 		
 		break;
 

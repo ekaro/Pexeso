@@ -19,7 +19,7 @@ void Deck::ResizeDeck()
 	::GetClientRect(handle, &ClientRect);
 	CurrentCardWidth = (ClientRect.right - ClientRect.left) / 5;
 	CurrentCardHeight = (ClientRect.bottom - ClientRect.top - offset) / 4;
-	
+
 	int index = 0;
 
 	for (int i = 0; i < rows; i++)
@@ -30,7 +30,16 @@ void Deck::ResizeDeck()
 			Cards[index].top = offset + CurrentCardHeight * i;
 			Cards[index].CardWidth = CurrentCardWidth;
 			Cards[index].CardHeight = CurrentCardHeight;
-			Cards[index].Color = (RGB(0, 255, 0));
+
+			if (Cards[index].Exposed == true)
+			{
+				Cards[index].Color = Cards[index].Blue;
+			}
+			else if (Cards[index].Exposed == false)
+			{
+				Cards[index].Color = Cards[index].Green;
+			}
+
 			index++;
 		}
 	}
@@ -57,13 +66,27 @@ void Deck::DrawDeck(HDC hdc)
 
 	for (Card c : Cards)
 	{
-		c.DrawCard(hdc, c.CardWidth, c.CardHeight);
+		c.DrawCard(hdc, c.CardWidth, c.CardHeight, c.Color);
 	}
 }
 
-void Deck::Card::DrawCard(HDC hdc, int CardWidth, int CardHeight)
+/*
+Deck::Card::Card()
+{
+	//Color = Green;
+	bool Exposed = false;
+}*/
+
+void Deck::Card::DrawCard(HDC hdc, int CardWidth, int CardHeight, COLORREF CardColor)
 {
 	SelectObject(hdc, GetStockObject(DC_BRUSH));
-	SetDCBrushColor(hdc, Color);
+	SetDCBrushColor(hdc, CardColor);
 	Rectangle(hdc, left, top, left + CardWidth, top + CardHeight);
 }
+
+/*
+void Deck::Card::Clicked()
+{
+	Exposed = true;
+	Color = Blue;
+}*/
