@@ -10,6 +10,8 @@ Deck::Deck(HWND hWnd, int ButtonOffset)
 	NewGame();
 }
 
+bool Deck::Card::Exposed = false;
+
 void Deck::ResizeDeck()
 {
 	RECT ClientRect;
@@ -66,21 +68,33 @@ void Deck::DrawDeck(HDC hdc)
 
 	for (Card c : Cards)
 	{
+		if (c.Exposed)
+		{
+			SelectObject(hdc, GetStockObject(DC_BRUSH));
+			SetDCBrushColor(hdc, c.Blue);
+		}
+		else
+		{
+			SelectObject(hdc, GetStockObject(DC_BRUSH));
+			SetDCBrushColor(hdc, c.Green);
+		}
+
 		c.DrawCard(hdc, c.CardWidth, c.CardHeight, c.Color);
 	}
 }
+
 
 /*
 Deck::Card::Card()
 {
 	//Color = Green;
-	bool Exposed = false;
+	bool Deck::Card::Exposed = false;
 }*/
 
 void Deck::Card::DrawCard(HDC hdc, int CardWidth, int CardHeight, COLORREF CardColor)
 {
-	SelectObject(hdc, GetStockObject(DC_BRUSH));
-	SetDCBrushColor(hdc, CardColor);
+	//SelectObject(hdc, GetStockObject(DC_BRUSH));
+	//SetDCBrushColor(hdc, CardColor);
 	Rectangle(hdc, left, top, left + CardWidth, top + CardHeight);
 }
 

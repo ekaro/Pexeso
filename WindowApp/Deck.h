@@ -19,7 +19,7 @@ private:
 		COLORREF Green = (RGB(0, 255, 0));
 		COLORREF Blue = (RGB(0, 0, 255));
 		COLORREF Color;
-		bool Exposed;
+		static bool Exposed;
 		int Number;	
 		//void Clicked();
 	private:

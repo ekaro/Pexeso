@@ -30,6 +30,7 @@ int offset = 100;
 int WindowWidth = 500;
 int WindowHeight = 600 + offset;
 RECT ClientRect;
+RECT CardRect;
 
 int CardAreaWidth = WindowWidth;
 int CardAreaHeight = WindowHeight - offset;
@@ -45,7 +46,6 @@ int Card;
 
 int RestartButtonWidth = 200;
 int RestartButtonHeight = offset;
-
 
 void DrawCards(HDC handle, int CardWidth, int CardHeight, COLORREF Color)
 {
@@ -93,7 +93,6 @@ void NewGame(HDC handle, HWND hWnd)
 	std::shuffle(std::begin(Deck), std::end(Deck), rng);
 
 	bool Exposed[20] = {false};
-	
 
 	// Resing window
 	::GetClientRect(hWnd, &ClientRect);
@@ -165,7 +164,7 @@ return 1;
 		hInstance,
 		NULL
 	);
-
+	
 	HWND RestartButton = CreateWindow(
 		L"BUTTON",  // Predefined class; Unicode assumed 
 		L"Restart",      // Button text 
@@ -220,6 +219,8 @@ return 1;
 	return (int)msg.wParam;
 }
 
+
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	PAINTSTRUCT ps;
@@ -227,7 +228,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	TCHAR display_msg[] = _T("Message in window");
 	int State = 0;
 	Deck Deck(hWnd, offset);
-	static bool Clicked = false;
 
 	switch (message)
 	{
@@ -238,10 +238,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		// Here your application is laid out.
 		// For this introduction, we just print out display message
 		// in the top left corner.
-		if (Clicked == true) 
-		{
-			Text(hdc);
-		}
 		
 		// End application-specific layout section.
 		
@@ -277,11 +273,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		Card = (xPos / CardW) + ((yPos - offset) / CardH) * 5;
 		
 		Deck.Cards[Card].Exposed = true;
+		CardRect = { xPos - (xPos%CardW), yPos - ((yPos - offset) % CardH), xPos - (xPos%CardW) + CardW, yPos - ((yPos - offset) % CardH) + CardH };
 
-		Clicked = true;
-
-		InvalidateRect(hWnd, &ClientRect, true);
-		
+		//CardRect = { 0 + CardW*(Card % 5), 100 + CardH* };
+		InvalidateRect(hWnd, &CardRect, false);	
 		break;
 
 	case WM_DESTROY:
