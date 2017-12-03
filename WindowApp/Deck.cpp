@@ -10,7 +10,7 @@ Deck::Deck(int ButtonOffset)
 	NewGame();
 }
 
-bool Deck::Card::Exposed = false;
+//bool Deck::Card::Exposed = false;
 
 void Deck::ResizeDeck(HWND hWnd)
 {
@@ -32,6 +32,7 @@ void Deck::ResizeDeck(HWND hWnd)
 			Cards[index].top = offset + CurrentCardHeight * i;
 			Cards[index].CardWidth = CurrentCardWidth;
 			Cards[index].CardHeight = CurrentCardHeight;
+			//Cards[i].Exposed = false;
 			/*
 			if (Cards[index].Exposed == true)
 			{

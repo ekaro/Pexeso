@@ -22,7 +22,7 @@ private:
 		COLORREF Green = (RGB(0, 255, 0));
 		COLORREF Blue = (RGB(0, 0, 255));
 		COLORREF Color;
-		static bool Exposed;
+		bool Exposed = false;
 		int Number;	
 	private:
 		HDC handle;
