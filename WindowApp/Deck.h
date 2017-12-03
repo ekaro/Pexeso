@@ -13,7 +13,7 @@ private:
 	class Card
 	{
 	public:
-		Card();
+		Card() = default;
 		void DrawCard(HDC hdc, int CardWidth, int CardHeight, COLORREF Color);
 		int left = 0;
 		int top;
@@ -23,9 +23,10 @@ private:
 		COLORREF Blue = (RGB(0, 0, 255));
 		COLORREF Color;
 		bool Exposed = false;
-		int Number;	
+		int Number;
+		RECT GetRect();
 	private:
-		HDC handle;
+		HDC handle;	
 	};
 public:
 	Deck(int ButtonOffset);
@@ -34,6 +35,7 @@ public:
 	void NewGame();
 	std::vector<Card> Cards;   // vector of all cards in the deck
 	int CardNums[20];
+	int GetCardIndex(HWND hWnd, int x, int y);   //returns index of card that has been clicked
 private:
 	HWND handle;
 	int columns = 5;

@@ -20,102 +20,21 @@ LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 // Colors
 HBRUSH hBrushBlack = CreateSolidBrush(RGB(0, 0, 0));
-COLORREF Black = (RGB(0, 0, 0));
-COLORREF White = (RGB(255, 255, 255));
-COLORREF Red = (RGB(255, 0, 0));
-COLORREF Green = (RGB(0, 255, 0));
 
 // Window properties
 int offset = 100;
 int WindowWidth = 500;
 int WindowHeight = 600 + offset;
-RECT ClientRect;
 RECT CardRect;
-
-int CardAreaWidth = WindowWidth;
-int CardAreaHeight = WindowHeight - offset;
 
 int xPos;
 int yPos;
-
-int CurrentCardAreaWidth;
-int CurrentCardAreaHeight;
-int CardW;
-int CardH;
 int Card;
 
 int RestartButtonWidth = 200;
 int RestartButtonHeight = offset;
 
-Deck deck(offset);
-
-void DrawCards(HDC handle, int CardWidth, int CardHeight, COLORREF Color)
-{
-	
-	int left = 0;
-	int top = 0;
-	int right = CardWidth;
-	int bottom = CardHeight;
-	
-	int rows = 4;
-	int columns = 5;
-	
-	//    Select DC_BRUSH so you can change the brush color from the 
-	//    default WHITE_BRUSH to any other color
-	//SelectObject(handle, GetStockObject(DC_BRUSH));
-	//SetDCBrushColor(handle, Color);
-
-	for (int i = 0; i < rows; i++)
-	{
-		for (int j = 0; j < columns; j++)
-		{
-			Rectangle(handle, left, top + offset, right, bottom + offset);
-			left += CardWidth;
-			right += CardWidth;
-		}
-		left = 0;
-		top += CardHeight;
-		right = CardWidth;
-		bottom += CardHeight;	
-	}
-}
-
-void NewGame(HDC handle, HWND hWnd)
-{
-	int Deck[20];
-	// fill up array as 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2.. (will be 10 groups)
-	for (int i = 0; i < 20; i++)
-	{
-		Deck[i] = i % 10;
-	}
-
-	// and randomly rearrange order
-	// shuffle array;
-	auto rng = std::default_random_engine{};
-	std::shuffle(std::begin(Deck), std::end(Deck), rng);
-
-	bool Exposed[20] = {false};
-
-	// Resing window
-	::GetClientRect(hWnd, &ClientRect);
-	CurrentCardAreaWidth = ClientRect.right - ClientRect.left;
-	CurrentCardAreaHeight = ClientRect.bottom - ClientRect.top - offset;
-	CardW = CurrentCardAreaWidth / 5;
-	CardH = CurrentCardAreaHeight / 4;
-
-	// Rectangle(hdc, 0, 0, Width/5, Height/5);
-	DrawCards(handle, CardW, CardH, Green);
-}
-
-void Text(HDC hdc)
-{
-	SetTextColor(hdc, RGB(255, 0, 0));
-	SetBkColor(hdc, RGB(0, 0, 0));
-	TCHAR display_msg[] = _T("Message in window");
-	TextOut(hdc, RestartButtonWidth, 10, display_msg, _tcslen(display_msg));
-}
-
-
+Deck NewDeck(offset);
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -166,9 +85,7 @@ return 1;
 		hInstance,
 		NULL
 	);
-	
-	
-	
+		
 	HWND RestartButton = CreateWindow(
 		L"BUTTON",  // Predefined class; Unicode assumed 
 		L"Restart",      // Button text 
@@ -212,7 +129,6 @@ return 1;
 	ShowWindow(hWnd, nCmdShow);
 	UpdateWindow(hWnd);
 	
-
 	MSG msg;
 	while (GetMessage(&msg, NULL, 0, 0))
 	{
@@ -223,8 +139,6 @@ return 1;
 	return (int)msg.wParam;
 }
 
-
-
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	PAINTSTRUCT ps;
@@ -232,39 +146,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	TCHAR display_msg[] = _T("Message in window");
 	int State = 0;
 	
-
 	switch (message)
 	{
 	case WM_PAINT:
 
 		hdc = BeginPaint(hWnd, &ps);
 
-		// Here your application is laid out.
-		// For this introduction, we just print out display message
-		// in the top left corner.
-		
-		// End application-specific layout section.
-		
-		// Resing window
-		//::GetClientRect(hWnd, &ClientRect);
-		//CardAreaWidth = ClientRect.right - ClientRect.left;
-		//CardAreaHeight = ClientRect.bottom - ClientRect.top - offset;
-		SetTextColor(hdc, RGB(255, 0, 0));
-		//SetBkColor(hdc, RGB(0, 0, 0));
-		TextOut(hdc,
-			RestartButtonWidth, 5,
-			display_msg, _tcslen(display_msg));
-		// Rectangle(hdc, 0, 0, Width/5, Height/5);
-		//NewGame(hdc, hWnd);
-		// DrawCards(hdc, CardAreaWidth/5, CardAreaHeight/4, Green);
-	
-		deck.DrawDeck(hdc, hWnd);
-		
-		EndPaint(hWnd, &ps);
-		break;
+		NewDeck.DrawDeck(hdc, hWnd);
 
-	case WM_CREATE:
-		
+		EndPaint(hWnd, &ps);
 		break;
 	
 	case WM_LBUTTONDOWN:
@@ -272,16 +162,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		xPos = GET_X_LPARAM(lParam);
 		yPos = GET_Y_LPARAM(lParam);
 
-		::GetClientRect(hWnd, &ClientRect);
-		CurrentCardAreaWidth = ClientRect.right - ClientRect.left;
-		CurrentCardAreaHeight = ClientRect.bottom - ClientRect.top - offset;
-		CardW = CurrentCardAreaWidth / 5;
-		CardH = CurrentCardAreaHeight / 4;
+		Card = NewDeck.GetCardIndex(hWnd, xPos, yPos);
 
-		Card = (xPos / CardW) + ((yPos - offset) / CardH) * 5;
-		
-		deck.Cards[Card].Exposed = true;
-		CardRect = { xPos - (xPos%CardW), yPos - ((yPos - offset) % CardH), xPos - (xPos%CardW) + CardW, yPos - ((yPos - offset) % CardH) + CardH };
+		NewDeck.Cards[Card].Exposed = true;
+
+		CardRect = NewDeck.Cards[Card].GetRect();
 
 		InvalidateRect(hWnd, &CardRect, false);	
 		break;
