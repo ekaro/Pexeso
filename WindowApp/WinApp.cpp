@@ -47,6 +47,8 @@ int Card;
 int RestartButtonWidth = 200;
 int RestartButtonHeight = offset;
 
+Deck deck(offset);
+
 void DrawCards(HDC handle, int CardWidth, int CardHeight, COLORREF Color)
 {
 	
@@ -165,6 +167,8 @@ return 1;
 		NULL
 	);
 	
+	
+	
 	HWND RestartButton = CreateWindow(
 		L"BUTTON",  // Predefined class; Unicode assumed 
 		L"Restart",      // Button text 
@@ -227,7 +231,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	HDC hdc;
 	TCHAR display_msg[] = _T("Message in window");
 	int State = 0;
-	Deck Deck(hWnd, offset);
+	
 
 	switch (message)
 	{
@@ -245,12 +249,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		//::GetClientRect(hWnd, &ClientRect);
 		//CardAreaWidth = ClientRect.right - ClientRect.left;
 		//CardAreaHeight = ClientRect.bottom - ClientRect.top - offset;
-		
+		SetTextColor(hdc, RGB(255, 0, 0));
+		//SetBkColor(hdc, RGB(0, 0, 0));
+		TextOut(hdc,
+			RestartButtonWidth, 5,
+			display_msg, _tcslen(display_msg));
 		// Rectangle(hdc, 0, 0, Width/5, Height/5);
 		//NewGame(hdc, hWnd);
 		// DrawCards(hdc, CardAreaWidth/5, CardAreaHeight/4, Green);
 	
-		Deck.DrawDeck(hdc);
+		deck.DrawDeck(hdc, hWnd);
 		
 		EndPaint(hWnd, &ps);
 		break;
@@ -272,10 +280,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		Card = (xPos / CardW) + ((yPos - offset) / CardH) * 5;
 		
-		Deck.Cards[Card].Exposed = true;
+		deck.Cards[Card].Exposed = true;
 		CardRect = { xPos - (xPos%CardW), yPos - ((yPos - offset) % CardH), xPos - (xPos%CardW) + CardW, yPos - ((yPos - offset) % CardH) + CardH };
 
-		//CardRect = { 0 + CardW*(Card % 5), 100 + CardH* };
 		InvalidateRect(hWnd, &CardRect, false);	
 		break;
 

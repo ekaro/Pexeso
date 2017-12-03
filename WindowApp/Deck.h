@@ -3,6 +3,9 @@
 #include <vector>
 #include <random>
 #include <algorithm>
+//#include <afxwin.h>
+#include <tchar.h>
+#include <string> 
 
 class Deck
 {
@@ -10,7 +13,7 @@ private:
 	class Card
 	{
 	public:
-		Card() = default;
+		Card();
 		void DrawCard(HDC hdc, int CardWidth, int CardHeight, COLORREF Color);
 		int left = 0;
 		int top;
@@ -21,14 +24,13 @@ private:
 		COLORREF Color;
 		static bool Exposed;
 		int Number;	
-		//void Clicked();
 	private:
 		HDC handle;
 	};
 public:
-	Deck(HWND hWnd, int ButtonOffset);
-	void DrawDeck(HDC hdc);    // drawing of every card in the deck
-	void ResizeDeck();		   // resizing of deck according to current size of the window
+	Deck(int ButtonOffset);
+	void DrawDeck(HDC hdc, HWND hWnd);    // drawing of every card in the deck
+	void ResizeDeck(HWND hWnd);		   // resizing of deck according to current size of the window
 	void NewGame();
 	std::vector<Card> Cards;   // vector of all cards in the deck
 	int CardNums[20];
