@@ -36,6 +36,7 @@ public:
 	std::vector<Card> Cards;   // vector of all cards in the deck
 	int CardNums[20];
 	int GetCardIndex(HWND hWnd, int x, int y);   //returns index of card that has been clicked
+	static int State;
 private:
 	HWND handle;
 	int columns = 5;

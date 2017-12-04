@@ -6,7 +6,10 @@ Deck::Deck(int ButtonOffset)
 {
 	Cards.resize(20);
 	NewGame();
+	
 }
+
+int Deck::State = 0;
 
 void Deck::ResizeDeck(HWND hWnd)
 {

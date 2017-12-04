@@ -30,6 +30,8 @@ RECT CardRect;
 int xPos;
 int yPos;
 int Card;
+int FirstCard;
+int SecondCard;
 
 int RestartButtonWidth = 200;
 int RestartButtonHeight = offset;
@@ -67,76 +69,76 @@ return 1;
 	// The parameters to CreateWindow explained:
 	// szWindowClass: the name of the application
 	// szTitle: the text that appears in the title bar
-	// WS_OVERLAPPEDWINDOW: the type of window to create
-	// CW_USEDEFAULT, CW_USEDEFAULT: initial position (x, y)
-	// 500, 100: initial size (width, length)
-	// NULL: the parent of this window
-	// NULL: this application does not have a menu bar
-	// hInstance: the first parameter from WinMain
-	// NULL: not used in this application
-	HWND hWnd = CreateWindow(
-		szWindowClass,
-		szTitle,
-		WS_OVERLAPPEDWINDOW,
-		CW_USEDEFAULT, CW_USEDEFAULT,
-		WindowWidth, WindowHeight,
-		NULL,
-		NULL,
-		hInstance,
-		NULL
-	);
-		
-	HWND RestartButton = CreateWindow(
-		L"BUTTON",  // Predefined class; Unicode assumed 
-		L"Restart",      // Button text 
-		WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,  // Styles 
-		0,         // x position 
-		0,         // y position 
-		RestartButtonWidth,        // Button width
-		RestartButtonHeight,        // Button height
-		hWnd,     // Parent window
-		NULL,       // No menu.
-		hInstance,
-		NULL
-	);
-	
-	if (IsWindow(hWnd))
-	{
-		DWORD dwStyle = GetWindowLongPtr(hWnd, GWL_STYLE);
-		DWORD dwExStyle = GetWindowLongPtr(hWnd, GWL_EXSTYLE);
-		HMENU menu = GetMenu(hWnd);
+// WS_OVERLAPPEDWINDOW: the type of window to create
+// CW_USEDEFAULT, CW_USEDEFAULT: initial position (x, y)
+// 500, 100: initial size (width, length)
+// NULL: the parent of this window
+// NULL: this application does not have a menu bar
+// hInstance: the first parameter from WinMain
+// NULL: not used in this application
+HWND hWnd = CreateWindow(
+	szWindowClass,
+	szTitle,
+	WS_OVERLAPPEDWINDOW,
+	CW_USEDEFAULT, CW_USEDEFAULT,
+	WindowWidth, WindowHeight,
+	NULL,
+	NULL,
+	hInstance,
+	NULL
+);
 
-		RECT rc = { 0, 0, WindowWidth, WindowHeight };
+HWND RestartButton = CreateWindow(
+	L"BUTTON",  // Predefined class; Unicode assumed 
+	L"Restart",      // Button text 
+	WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,  // Styles 
+	0,         // x position 
+	0,         // y position 
+	RestartButtonWidth,        // Button width
+	RestartButtonHeight,        // Button height
+	hWnd,     // Parent window
+	NULL,       // No menu.
+	hInstance,
+	NULL
+);
 
-		AdjustWindowRectEx(&rc, dwStyle, menu ? TRUE : FALSE, dwExStyle);
+if (IsWindow(hWnd))
+{
+	DWORD dwStyle = GetWindowLongPtr(hWnd, GWL_STYLE);
+	DWORD dwExStyle = GetWindowLongPtr(hWnd, GWL_EXSTYLE);
+	HMENU menu = GetMenu(hWnd);
 
-		SetWindowPos(hWnd, NULL, 0, 0, rc.right - rc.left, rc.bottom - rc.top, SWP_NOZORDER | SWP_NOMOVE);
-	}
+	RECT rc = { 0, 0, WindowWidth, WindowHeight };
 
-	if (!hWnd)
-	{
-		MessageBox(NULL,
-			_T("Call to CreateWindow failed!"),
-			_T("Windows Desktop Guided Tour"),
-			NULL);
+	AdjustWindowRectEx(&rc, dwStyle, menu ? TRUE : FALSE, dwExStyle);
 
-		return 1;
-	}
+	SetWindowPos(hWnd, NULL, 0, 0, rc.right - rc.left, rc.bottom - rc.top, SWP_NOZORDER | SWP_NOMOVE);
+}
 
-	// The parameters to ShowWindow explained:
-	// hWnd: the value returned from CreateWindow
-	// nCmdShow: the fourth parameter from WinMain
-	ShowWindow(hWnd, nCmdShow);
-	UpdateWindow(hWnd);
-	
-	MSG msg;
-	while (GetMessage(&msg, NULL, 0, 0))
-	{
-		TranslateMessage(&msg);
-		DispatchMessage(&msg);
-	}
+if (!hWnd)
+{
+	MessageBox(NULL,
+		_T("Call to CreateWindow failed!"),
+		_T("Windows Desktop Guided Tour"),
+		NULL);
 
-	return (int)msg.wParam;
+	return 1;
+}
+
+// The parameters to ShowWindow explained:
+// hWnd: the value returned from CreateWindow
+// nCmdShow: the fourth parameter from WinMain
+ShowWindow(hWnd, nCmdShow);
+UpdateWindow(hWnd);
+
+MSG msg;
+while (GetMessage(&msg, NULL, 0, 0))
+{
+	TranslateMessage(&msg);
+	DispatchMessage(&msg);
+}
+
+return (int)msg.wParam;
 }
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -145,7 +147,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	HDC hdc;
 	TCHAR display_msg[] = _T("Message in window");
 	int State = 0;
-	
+
 	switch (message)
 	{
 	case WM_PAINT:
@@ -156,7 +158,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		EndPaint(hWnd, &ps);
 		break;
-	
+
 	case WM_LBUTTONDOWN:
 
 		xPos = GET_X_LPARAM(lParam);
@@ -164,7 +166,37 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		Card = NewDeck.GetCardIndex(hWnd, xPos, yPos);
 
-		NewDeck.Cards[Card].Exposed = true;
+		if (NewDeck.Cards[Card].Exposed == false)
+		{
+			if (NewDeck.State == 0)
+			{
+				FirstCard = Card;
+				NewDeck.Cards[FirstCard].Exposed = true;
+				NewDeck.State = 1;
+			}
+			else if (NewDeck.State == 1)
+			{
+				SecondCard = Card;
+				NewDeck.Cards[SecondCard].Exposed = true;
+				NewDeck.State = 2;
+			}
+			else
+			{
+				if (NewDeck.CardNums[FirstCard] != NewDeck.CardNums[SecondCard])
+				{
+					NewDeck.Cards[FirstCard].Exposed = false;
+					NewDeck.Cards[SecondCard].Exposed = false;
+					CardRect = NewDeck.Cards[FirstCard].GetRect();
+					InvalidateRect(hWnd, &CardRect, false);			
+					CardRect = NewDeck.Cards[SecondCard].GetRect();
+					InvalidateRect(hWnd, &CardRect, false);
+				}
+				FirstCard = Card;
+				NewDeck.Cards[FirstCard].Exposed = true;
+				NewDeck.State = 1;
+			}
+		}
+		//NewDeck.Cards[Card].Exposed = true;
 
 		CardRect = NewDeck.Cards[Card].GetRect();
 
