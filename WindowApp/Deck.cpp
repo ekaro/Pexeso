@@ -87,7 +87,7 @@ void Deck::DrawNum(HDC hdc, Card card)
 	DrawText(hdc, CardNumber.c_str(), _tcslen(CardNumber.c_str()), &CardRect, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 }
 
-void Deck::CompareCards(HWND hWnd, int Card)
+void Deck::CompareCards(HWND hWnd, int Card) 
 {
 	if (Cards[Card].Exposed == false)
 	{
@@ -135,7 +135,7 @@ void Deck::Card::Clicked(HWND hWnd)
 	InvalidateRect(hWnd, &CardRect, false);
 }
 
-RECT Deck::Card::GetRect()
+RECT Deck::Card::GetRect() const
 {
 	return { left, top, left + CardWidth, top + CardHeight };
 }

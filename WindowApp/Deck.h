@@ -23,7 +23,7 @@ private:
 		COLORREF Color;
 		bool Exposed = false;
 		int Number;
-		RECT GetRect();	
+		RECT GetRect() const;
 		void Clicked(HWND hWnd);
 	private:
 		HDC handle;	
