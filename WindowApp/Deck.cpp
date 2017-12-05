@@ -6,10 +6,8 @@ Deck::Deck(int ButtonOffset)
 {
 	Cards.resize(20);
 	NewGame();
-	
+	CardFont = CreateFont(70, 0, 0, 0, 300, false, false, false, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, TEXT("Arial"));	
 }
-
-int Deck::State = 0;
 
 void Deck::ResizeDeck(HWND hWnd)
 {
@@ -61,6 +59,7 @@ void Deck::DrawDeck(HDC hdc, HWND hWnd)
 		if (Cards[i].Exposed == true)
 		{
 			Cards[i].Color = Cards[i].Blue;
+			
 		}
 		else
 		{
@@ -68,21 +67,31 @@ void Deck::DrawDeck(HDC hdc, HWND hWnd)
 		}
 
 		Cards[i].DrawCard(hdc, Cards[i].CardWidth, Cards[i].CardHeight, Cards[i].Color);
-		
-		std::wstring CardNumber = std::to_wstring(Cards[i].Number);
-		SetTextColor(hdc, RGB(255, 0, 0));
-		SetBkColor(hdc, Cards[i].Color);
-		TextOut(hdc,
-			Cards[i].left + Cards[i].CardWidth / 2, Cards[i].top + Cards[i].CardHeight / 2,
-			CardNumber.c_str(), _tcslen(CardNumber.c_str()));
+
+		if (Cards[i].Exposed == true) 
+		{
+			DrawNum(hdc, Cards[i]);
+		}			
 	}
+}
+
+void Deck::DrawNum(HDC hdc, Card card)
+{
+	std::wstring CardNumber = std::to_wstring(card.Number);
+
+	SetTextColor(hdc, RGB(255, 255, 255));
+	SetBkColor(hdc, card.Color);
+	SelectObject(hdc, CardFont);
+
+	RECT CardRect = card.GetRect();
+	DrawText(hdc, CardNumber.c_str(), _tcslen(CardNumber.c_str()), &CardRect, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 }
 
 void Deck::Card::DrawCard(HDC hdc, int CardWidth, int CardHeight, COLORREF CardColor)
 {
 	SelectObject(hdc, GetStockObject(DC_BRUSH));
 	SetDCBrushColor(hdc, CardColor);
-	Rectangle(hdc, left, top, left + CardWidth, top + CardHeight);		
+	Rectangle(hdc, left, top, left + CardWidth, top + CardHeight);			
 }
 
 RECT Deck::Card::GetRect()

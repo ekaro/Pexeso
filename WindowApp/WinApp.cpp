@@ -146,7 +146,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	PAINTSTRUCT ps;
 	HDC hdc;
 	TCHAR display_msg[] = _T("Message in window");
-	int State = 0;
 
 	switch (message)
 	{

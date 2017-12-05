@@ -3,7 +3,6 @@
 #include <vector>
 #include <random>
 #include <algorithm>
-//#include <afxwin.h>
 #include <tchar.h>
 #include <string> 
 
@@ -24,7 +23,7 @@ private:
 		COLORREF Color;
 		bool Exposed = false;
 		int Number;
-		RECT GetRect();
+		RECT GetRect();		
 	private:
 		HDC handle;	
 	};
@@ -35,8 +34,10 @@ public:
 	void NewGame();
 	std::vector<Card> Cards;   // vector of all cards in the deck
 	int CardNums[20];
+	void DrawNum(HDC hdc, Card card);
 	int GetCardIndex(HWND hWnd, int x, int y);   //returns index of card that has been clicked
-	static int State;
+	int State;
+	HFONT CardFont;	
 private:
 	HWND handle;
 	int columns = 5;
