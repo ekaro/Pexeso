@@ -87,11 +87,52 @@ void Deck::DrawNum(HDC hdc, Card card)
 	DrawText(hdc, CardNumber.c_str(), _tcslen(CardNumber.c_str()), &CardRect, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 }
 
+void Deck::CompareCards(HWND hWnd, int Card)
+{
+	if (Cards[Card].Exposed == false)
+	{
+		if (State == 0)
+		{
+			FirstCard = Card;
+			Cards[FirstCard].Exposed = true;
+			State = 1;
+		}
+		else if (State == 1)
+		{
+			SecondCard = Card;
+			Cards[SecondCard].Exposed = true;
+			State = 2;
+		}
+		else
+		{
+			if (CardNums[FirstCard] != CardNums[SecondCard])
+			{
+				Cards[FirstCard].Exposed = false;
+				Cards[SecondCard].Exposed = false;
+				CardRect = Cards[FirstCard].GetRect();
+				InvalidateRect(hWnd, &CardRect, false);
+				CardRect = Cards[SecondCard].GetRect();
+				InvalidateRect(hWnd, &CardRect, false);
+			}
+			FirstCard = Card;
+			Cards[FirstCard].Exposed = true;
+			State = 1;
+		}
+	}
+}
+
 void Deck::Card::DrawCard(HDC hdc, int CardWidth, int CardHeight, COLORREF CardColor)
 {
 	SelectObject(hdc, GetStockObject(DC_BRUSH));
 	SetDCBrushColor(hdc, CardColor);
 	Rectangle(hdc, left, top, left + CardWidth, top + CardHeight);			
+}
+
+void Deck::Card::Clicked(HWND hWnd)
+{
+	RECT CardRect = GetRect();
+
+	InvalidateRect(hWnd, &CardRect, false);
 }
 
 RECT Deck::Card::GetRect()

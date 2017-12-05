@@ -165,41 +165,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		Card = NewDeck.GetCardIndex(hWnd, xPos, yPos);
 
-		if (NewDeck.Cards[Card].Exposed == false)
-		{
-			if (NewDeck.State == 0)
-			{
-				FirstCard = Card;
-				NewDeck.Cards[FirstCard].Exposed = true;
-				NewDeck.State = 1;
-			}
-			else if (NewDeck.State == 1)
-			{
-				SecondCard = Card;
-				NewDeck.Cards[SecondCard].Exposed = true;
-				NewDeck.State = 2;
-			}
-			else
-			{
-				if (NewDeck.CardNums[FirstCard] != NewDeck.CardNums[SecondCard])
-				{
-					NewDeck.Cards[FirstCard].Exposed = false;
-					NewDeck.Cards[SecondCard].Exposed = false;
-					CardRect = NewDeck.Cards[FirstCard].GetRect();
-					InvalidateRect(hWnd, &CardRect, false);			
-					CardRect = NewDeck.Cards[SecondCard].GetRect();
-					InvalidateRect(hWnd, &CardRect, false);
-				}
-				FirstCard = Card;
-				NewDeck.Cards[FirstCard].Exposed = true;
-				NewDeck.State = 1;
-			}
-		}
-		//NewDeck.Cards[Card].Exposed = true;
+		NewDeck.CompareCards(hWnd, Card);
 
-		CardRect = NewDeck.Cards[Card].GetRect();
-
-		InvalidateRect(hWnd, &CardRect, false);	
+		NewDeck.Cards[Card].Clicked(hWnd);
+	
 		break;
 
 	case WM_DESTROY:
