@@ -39,6 +39,7 @@ public:
 	void CompareCards(HWND hWnd, int Card);
 	int GetCardIndex(HWND hWnd, int x, int y);   //returns index of card that has been clicked		
 private:
+	static constexpr RECT TurnsRect = { 400, 5, 450, 75};
 	HWND handle;
 	int columns = 5;
 	int rows = 4;
@@ -46,6 +47,7 @@ private:
 	int FirstCard;
 	int SecondCard;
 	int State;
+	int Turns = 0;
 	HFONT CardFont;
 	RECT CardRect;
 	std::random_device rd;

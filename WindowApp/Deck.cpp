@@ -73,6 +73,19 @@ void Deck::DrawDeck(HDC hdc, HWND hWnd)
 			DrawNum(hdc, Cards[i]);
 		}			
 	}
+
+	std::wstring TurnsString = std::to_wstring(Turns);
+
+	SetTextColor(hdc, RGB(0, 255, 0));
+	SetBkColor(hdc, RGB(0, 0, 0));
+	SelectObject(hdc, CardFont);
+
+	TCHAR turns_msg[] = _T("Turns:");
+
+	TextOut(hdc, 220, 5, turns_msg, _tcslen(turns_msg));
+	TextOut(hdc, 400, 5, TurnsString.c_str(), _tcslen(TurnsString.c_str()));
+
+	InvalidateRect(hWnd, &TurnsRect, false);
 }
 
 void Deck::DrawNum(HDC hdc, Card card)
@@ -102,9 +115,11 @@ void Deck::CompareCards(HWND hWnd, int Card)
 			SecondCard = Card;
 			Cards[SecondCard].Exposed = true;
 			State = 2;
+			
 		}
 		else
 		{
+			Turns++;
 			if (CardNums[FirstCard] != CardNums[SecondCard])
 			{
 				Cards[FirstCard].Exposed = false;
