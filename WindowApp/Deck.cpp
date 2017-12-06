@@ -74,15 +74,18 @@ void Deck::DrawDeck(HDC hdc, HWND hWnd)
 		}			
 	}
 
+	DrawTurns(hdc, hWnd);
+}
+
+void Deck::DrawTurns(HDC hdc, HWND hWnd)
+{
 	std::wstring TurnsString = std::to_wstring(Turns);
 
 	SetTextColor(hdc, RGB(0, 255, 0));
 	SetBkColor(hdc, RGB(0, 0, 0));
 	SelectObject(hdc, CardFont);
 
-	TCHAR turns_msg[] = _T("Turns:");
-
-	TextOut(hdc, 220, 5, turns_msg, _tcslen(turns_msg));
+	TextOut(hdc, 220, 5, TurnsMsg, _tcslen(TurnsMsg));
 	TextOut(hdc, 400, 5, TurnsString.c_str(), _tcslen(TurnsString.c_str()));
 
 	InvalidateRect(hWnd, &TurnsRect, false);

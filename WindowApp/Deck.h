@@ -36,10 +36,12 @@ public:
 	std::vector<Card> Cards;   // vector of all cards in the deck
 	int CardNums[20];
 	void DrawNum(HDC hdc, Card card);
+	void DrawTurns(HDC hdc, HWND hWnd);
 	void CompareCards(HWND hWnd, int Card);
 	int GetCardIndex(HWND hWnd, int x, int y);   //returns index of card that has been clicked		
 private:
 	static constexpr RECT TurnsRect = { 400, 5, 450, 75};
+	static constexpr TCHAR TurnsMsg[] = _T("Turns:");
 	HWND handle;
 	int columns = 5;
 	int rows = 4;
