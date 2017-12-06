@@ -40,7 +40,7 @@ public:
 	void CompareCards(HWND hWnd, int Card);
 	int GetCardIndex(HWND hWnd, int x, int y);   //returns index of card that has been clicked		
 private:
-	static constexpr RECT TurnsRect = { 400, 5, 450, 75};
+	static constexpr RECT TurnsRect = { 400, 5, 500, 75};
 	static constexpr TCHAR TurnsMsg[] = _T("Turns:");
 	HWND handle;
 	int columns = 5;
