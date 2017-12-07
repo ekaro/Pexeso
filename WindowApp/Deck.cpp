@@ -104,7 +104,7 @@ void Deck::DrawNum(HDC hdc, Card card)
 	SelectObject(hdc, CardFont);
 
 	RECT CardRect = card.GetRect();
-	DrawText(hdc, CardNumber.c_str(), _tcslen(CardNumber.c_str()), &CardRect, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+	DrawText(hdc, CardNumber.c_str(), 1, &CardRect, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 }
 
 void Deck::CompareCards(HWND hWnd, int Card) 
