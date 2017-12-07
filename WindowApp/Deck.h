@@ -38,6 +38,7 @@ public:
 	void DrawNum(HDC hdc, Card card);
 	void DrawTurns(HDC hdc, HWND hWnd);
 	void CompareCards(HWND hWnd, int Card);
+	void RedrawClient(HWND hWnd);
 	int GetCardIndex(HWND hWnd, int x, int y);   //returns index of card that has been clicked		
 private:
 	static constexpr RECT TurnsRect = { 400, 5, 500, 75};
@@ -49,9 +50,10 @@ private:
 	int FirstCard;
 	int SecondCard;
 	int State;
-	int Turns = 0;
+	int Turns;
 	HFONT CardFont;
 	RECT CardRect;
+	RECT ClientRect;
 	std::random_device rd;
 	std::default_random_engine rng = std::default_random_engine(rd()); // default_random_engine have to be seeded with a unique seed on each pass 
 	                                                                   // so that numbers are different each time program is ran

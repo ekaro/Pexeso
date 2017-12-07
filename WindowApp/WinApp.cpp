@@ -35,6 +35,7 @@ int SecondCard;
 
 int RestartButtonWidth = 200;
 int RestartButtonHeight = offset;
+HWND RestartButton;
 
 Deck NewDeck(offset);
 
@@ -87,7 +88,7 @@ HWND hWnd = CreateWindow(
 	hInstance,
 	NULL
 );
-
+/*
 HWND RestartButton = CreateWindow(
 	L"BUTTON",  // Predefined class; Unicode assumed 
 	L"Restart",      // Button text 
@@ -100,7 +101,7 @@ HWND RestartButton = CreateWindow(
 	NULL,       // No menu.
 	hInstance,
 	NULL
-);
+);*/
 
 if (IsWindow(hWnd))
 {
@@ -141,6 +142,9 @@ while (GetMessage(&msg, NULL, 0, 0))
 return (int)msg.wParam;
 }
 
+
+#define ID_BUTTON 1
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	PAINTSTRUCT ps;
@@ -149,6 +153,31 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	switch (message)
 	{
+	case WM_CREATE:
+
+		RestartButton = CreateWindow(
+			L"BUTTON",  // Predefined class; Unicode assumed 
+			L"New Game",      // Button text 
+			WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,  // Styles 
+			0,         // x position 
+			0,         // y position 
+			RestartButtonWidth,        // Button width
+			RestartButtonHeight,        // Button height
+			hWnd,     // Parent window
+			(HMENU) ID_BUTTON,       
+			NULL,
+			NULL
+		);
+
+	case WM_COMMAND:
+
+		if (LOWORD(wParam) == ID_BUTTON)
+		{
+			NewDeck.NewGame();
+			NewDeck.RedrawClient(hWnd);				
+		}
+		break;
+
 	case WM_PAINT:
 
 		hdc = BeginPaint(hWnd, &ps);

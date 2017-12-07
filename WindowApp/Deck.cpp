@@ -47,7 +47,11 @@ void Deck::NewGame()
 	for (int i = 0; i < Cards.size(); i++)
 	{
 		Cards[i].Number = CardNums[i];
+		Cards[i].Exposed = false;
 	}
+	
+	Turns = 0; 
+	State = 0;
 }
 
 void Deck::DrawDeck(HDC hdc, HWND hWnd)
@@ -167,4 +171,10 @@ int Deck::GetCardIndex(HWND hWnd, int x, int y)
 	int Card = (x / CurrentCardWidth) + ((y - offset) / CurrentCardHeight) * 5;
 
 	return Card;   
+}
+
+void Deck::RedrawClient(HWND hWnd)
+{
+	::GetClientRect(hWnd, &ClientRect);
+	InvalidateRect(hWnd, &ClientRect, false);
 }
