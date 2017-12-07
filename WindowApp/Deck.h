@@ -38,7 +38,6 @@ public:
 	void DrawNum(HDC hdc, Card card);
 	void DrawTurns(HDC hdc, HWND hWnd);
 	void CompareCards(HWND hWnd, int Card);
-	void RedrawClient(HWND hWnd);
 	int GetCardIndex(HWND hWnd, int x, int y);   //returns index of card that has been clicked		
 private:
 	static constexpr RECT TurnsRect = { 400, 5, 500, 75};

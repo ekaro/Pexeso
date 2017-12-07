@@ -172,9 +172,3 @@ int Deck::GetCardIndex(HWND hWnd, int x, int y)
 
 	return Card;   
 }
-
-void Deck::RedrawClient(HWND hWnd)
-{
-	::GetClientRect(hWnd, &ClientRect);
-	InvalidateRect(hWnd, &ClientRect, false);
-}

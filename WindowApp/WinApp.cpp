@@ -174,7 +174,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		if (LOWORD(wParam) == ID_BUTTON)
 		{
 			NewDeck.NewGame();
-			NewDeck.RedrawClient(hWnd);
+			RedrawWindow(hWnd, NULL, NULL, RDW_INVALIDATE);
 		}
 		break;
 
