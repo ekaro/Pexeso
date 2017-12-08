@@ -91,7 +91,7 @@ void Deck::DrawTurns(HDC hdc, HWND hWnd)
 
 	TextOut(hdc, 220, 5, TurnsMsg, _tcslen(TurnsMsg));
 	TextOut(hdc, 400, 5, TurnsString.c_str(), _tcslen(TurnsString.c_str()));
-
+	
 	if (Turns < 10)
 	{
 		SelectObject(hdc, GetStockObject(DC_BRUSH));

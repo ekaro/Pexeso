@@ -192,12 +192,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		xPos = GET_X_LPARAM(lParam);
 		yPos = GET_Y_LPARAM(lParam);
 
-		Card = NewDeck.GetCardIndex(hWnd, xPos, yPos);
+		if (yPos > offset)
+		{
+			Card = NewDeck.GetCardIndex(hWnd, xPos, yPos);
 
-		NewDeck.CompareCards(hWnd, Card);
+			NewDeck.CompareCards(hWnd, Card);
 
-		NewDeck.Cards[Card].Clicked(hWnd);
-	
+			NewDeck.Cards[Card].Clicked(hWnd);
+		}
+		
 		break;
 
 	case WM_DESTROY:
