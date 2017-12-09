@@ -13,7 +13,7 @@ private:
 	{
 	public:
 		Card() = default;
-		void DrawCard(HDC hdc, int CardWidth, int CardHeight, COLORREF Color);
+		void DrawCard(HDC& hdc, int CardWidth, int CardHeight, COLORREF& Color);
 		int left = 0;
 		int top;
 		int CardWidth;
@@ -24,27 +24,27 @@ private:
 		bool Exposed = false;
 		int Number;
 		RECT GetRect() const;
-		void Clicked(HWND hWnd);
+		void Clicked(HWND& hWnd);
 	private:
 		HDC handle;	
 	};
 public:
 	Deck(int ButtonOffset);
-	void DrawDeck(HDC hdc, HWND hWnd);    // drawing of every card in the deck
-	void ResizeDeck(HWND hWnd);		   // resizing of deck according to current size of the window
+	void DrawDeck(HDC& hdc, HWND& hWnd);    // drawing of every card in the deck
+	void ResizeDeck(HWND& hWnd);		   // resizing of deck according to current size of the window
 	void NewGame();
 	std::vector<Card> Cards;   // vector of all cards in the deck
 	int CardNums[20];
-	void DrawNum(HDC hdc, Card card);
-	void DrawTurns(HDC hdc, HWND hWnd);
-	void CompareCards(HWND hWnd, int Card);
-	int GetCardIndex(HWND hWnd, int x, int y);   //returns index of card that has been clicked		
+	void DrawNum(HDC& hdc, Card& card);
+	void DrawTurns(HDC& hdc, HWND& hWnd);
+	void CompareCards(HWND& hWnd, int Card);
+	int GetCardIndex(HWND& hWnd, int x, int y);   //returns index of card that has been clicked		
 private:
 	static constexpr RECT TurnsRect = { 400, 5, 500, 75};
 	static constexpr TCHAR TurnsMsg[] = _T("Turns:");
 	HWND handle;
-	int columns = 5;
-	int rows = 4;
+	static constexpr int columns = 5;
+	static constexpr int rows = 4;
 	int offset;
 	int FirstCard;
 	int SecondCard;

@@ -9,7 +9,7 @@ Deck::Deck(int ButtonOffset)
 	CardFont = CreateFont(70, 0, 0, 0, 300, false, false, false, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, TEXT("Arial"));	
 }
 
-void Deck::ResizeDeck(HWND hWnd)
+void Deck::ResizeDeck(HWND& hWnd)
 {
 	RECT ClientRect;
 	int CurrentCardWidth;
@@ -54,7 +54,7 @@ void Deck::NewGame()
 	State = 0;
 }
 
-void Deck::DrawDeck(HDC hdc, HWND hWnd)
+void Deck::DrawDeck(HDC& hdc, HWND& hWnd)
 {
 	ResizeDeck(hWnd);
 
@@ -81,7 +81,7 @@ void Deck::DrawDeck(HDC hdc, HWND hWnd)
 	DrawTurns(hdc, hWnd);
 }
 
-void Deck::DrawTurns(HDC hdc, HWND hWnd)
+void Deck::DrawTurns(HDC& hdc, HWND& hWnd)
 {
 	std::wstring TurnsString = std::to_wstring(Turns);
 
@@ -102,7 +102,7 @@ void Deck::DrawTurns(HDC hdc, HWND hWnd)
 	InvalidateRect(hWnd, &TurnsRect, false);
 }
 
-void Deck::DrawNum(HDC hdc, Card card)
+void Deck::DrawNum(HDC& hdc, Card& card)
 {
 	std::wstring CardNumber = std::to_wstring(card.Number);
 
@@ -114,7 +114,7 @@ void Deck::DrawNum(HDC hdc, Card card)
 	DrawText(hdc, CardNumber.c_str(), 1, &CardRect, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 }
 
-void Deck::CompareCards(HWND hWnd, int Card) 
+void Deck::CompareCards(HWND& hWnd, int Card)
 {
 	if (Cards[Card].Exposed == false)
 	{
@@ -150,14 +150,14 @@ void Deck::CompareCards(HWND hWnd, int Card)
 	}
 }
 
-void Deck::Card::DrawCard(HDC hdc, int CardWidth, int CardHeight, COLORREF CardColor)
+void Deck::Card::DrawCard(HDC& hdc, int CardWidth, int CardHeight, COLORREF& CardColor)
 {
 	SelectObject(hdc, GetStockObject(DC_BRUSH));
 	SetDCBrushColor(hdc, CardColor);
 	Rectangle(hdc, left, top, left + CardWidth, top + CardHeight);			
 }
 
-void Deck::Card::Clicked(HWND hWnd)
+void Deck::Card::Clicked(HWND& hWnd)
 {
 	RECT CardRect = GetRect();
 
@@ -169,7 +169,7 @@ RECT Deck::Card::GetRect() const
 	return { left, top, left + CardWidth, top + CardHeight };
 }
 
-int Deck::GetCardIndex(HWND hWnd, int x, int y)
+int Deck::GetCardIndex(HWND& hWnd, int x, int y)
 {
 	RECT ClientRect;
 	::GetClientRect(hWnd, &ClientRect);
