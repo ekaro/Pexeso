@@ -1,10 +1,5 @@
-#include <windows.h>
 #include <stdlib.h>
-#include <string.h>
-#include <tchar.h>
 #include <Windowsx.h>
-#include <algorithm>
-#include <random>
 #include "Deck.h"
 
 // Global variables
@@ -13,7 +8,7 @@
 static TCHAR szWindowClass[] = _T("WinApp");
 
 // The string in the title bar
-static TCHAR szTitle[] = _T("Window Application");
+static TCHAR szTitle[] = _T("Pexeso");
 
 // Forward declaration of functions included in this module:
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
@@ -25,13 +20,10 @@ HBRUSH hBrushBlack = CreateSolidBrush(RGB(0, 0, 0));
 int offset = 100;
 int WindowWidth = 500;
 int WindowHeight = 600 + offset;
-RECT CardRect;
 
 int xPos;
 int yPos;
 int Card;
-int FirstCard;
-int SecondCard;
 
 int RestartButtonWidth = 200;
 int RestartButtonHeight = offset;
@@ -59,87 +51,73 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	if (!RegisterClassEx(&wcex))
 	{
-MessageBox(NULL,
-	_T("Call to RegisterClassEx failed!"),
-	_T("Windows Desktop Guided Tour"),
-	NULL);
+		MessageBox(NULL,
+		_T("Call to RegisterClassEx failed!"),
+		_T("Windows Desktop Guided Tour"),
+		NULL);
 
-return 1;
+		return 1;
 	}
 
 	// The parameters to CreateWindow explained:
 	// szWindowClass: the name of the application
 	// szTitle: the text that appears in the title bar
-// WS_OVERLAPPEDWINDOW: the type of window to create
-// CW_USEDEFAULT, CW_USEDEFAULT: initial position (x, y)
-// 500, 100: initial size (width, length)
-// NULL: the parent of this window
-// NULL: this application does not have a menu bar
-// hInstance: the first parameter from WinMain
-// NULL: not used in this application
-HWND hWnd = CreateWindow(
-	szWindowClass,
-	szTitle,
-	WS_OVERLAPPEDWINDOW,
-	CW_USEDEFAULT, CW_USEDEFAULT,
-	WindowWidth, WindowHeight,
-	NULL,
-	NULL,
-	hInstance,
-	NULL
-);
-/*
-HWND RestartButton = CreateWindow(
-	L"BUTTON",  // Predefined class; Unicode assumed 
-	L"Restart",      // Button text 
-	WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,  // Styles 
-	0,         // x position 
-	0,         // y position 
-	RestartButtonWidth,        // Button width
-	RestartButtonHeight,        // Button height
-	hWnd,     // Parent window
-	NULL,       // No menu.
-	hInstance,
-	NULL
-);*/
+	// WS_OVERLAPPEDWINDOW: the type of window to create
+	// CW_USEDEFAULT, CW_USEDEFAULT: initial position (x, y)
+	// 500, 100: initial size (width, length)
+	// NULL: the parent of this window
+	// NULL: this application does not have a menu bar
+	// hInstance: the first parameter from WinMain
+	// NULL: not used in this application
+	HWND hWnd = CreateWindow(
+		szWindowClass,
+		szTitle,
+		WS_OVERLAPPEDWINDOW,
+		CW_USEDEFAULT, CW_USEDEFAULT,
+		WindowWidth, WindowHeight,
+		NULL,
+		NULL,
+		hInstance,
+		NULL
+	);
 
-if (IsWindow(hWnd))
-{
-	DWORD dwStyle = GetWindowLongPtr(hWnd, GWL_STYLE);
-	DWORD dwExStyle = GetWindowLongPtr(hWnd, GWL_EXSTYLE);
-	HMENU menu = GetMenu(hWnd);
+	if (IsWindow(hWnd))
+	{
+		DWORD dwStyle = GetWindowLongPtr(hWnd, GWL_STYLE);
+		DWORD dwExStyle = GetWindowLongPtr(hWnd, GWL_EXSTYLE);
+		HMENU menu = GetMenu(hWnd);
 
-	RECT rc = { 0, 0, WindowWidth, WindowHeight };
+		RECT rc = { 0, 0, WindowWidth, WindowHeight };
 
-	AdjustWindowRectEx(&rc, dwStyle, menu ? TRUE : FALSE, dwExStyle);
+		AdjustWindowRectEx(&rc, dwStyle, menu ? TRUE : FALSE, dwExStyle);
 
-	SetWindowPos(hWnd, NULL, 0, 0, rc.right - rc.left, rc.bottom - rc.top, SWP_NOZORDER | SWP_NOMOVE);
-}
+		SetWindowPos(hWnd, NULL, 0, 0, rc.right - rc.left, rc.bottom - rc.top, SWP_NOZORDER | SWP_NOMOVE);
+	}
 
-if (!hWnd)
-{
-	MessageBox(NULL,
-		_T("Call to CreateWindow failed!"),
-		_T("Windows Desktop Guided Tour"),
-		NULL);
+	if (!hWnd)
+	{
+		MessageBox(NULL,
+			_T("Call to CreateWindow failed!"),
+			_T("Windows Desktop Guided Tour"),
+			NULL);
 
-	return 1;
-}
+		return 1;
+	}
 
-// The parameters to ShowWindow explained:
-// hWnd: the value returned from CreateWindow
-// nCmdShow: the fourth parameter from WinMain
-ShowWindow(hWnd, nCmdShow);
-UpdateWindow(hWnd);
+	// The parameters to ShowWindow explained:
+	// hWnd: the value returned from CreateWindow
+	// nCmdShow: the fourth parameter from WinMain
+	ShowWindow(hWnd, nCmdShow);
+	UpdateWindow(hWnd);
 
-MSG msg;
-while (GetMessage(&msg, NULL, 0, 0))
-{
-	TranslateMessage(&msg);
-	DispatchMessage(&msg);
-}
+	MSG msg;
+	while (GetMessage(&msg, NULL, 0, 0))
+	{
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+	}
 
-return (int)msg.wParam;
+	return (int)msg.wParam;
 }
 
 
@@ -198,9 +176,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			NewDeck.CompareCards(hWnd, Card);
 
-			NewDeck.Cards[Card].Clicked(hWnd);
-		}
-		
+			NewDeck.Clicked(hWnd, Card);
+		}	
 		break;
 
 	case WM_DESTROY:

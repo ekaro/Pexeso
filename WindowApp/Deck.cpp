@@ -9,7 +9,7 @@ Deck::Deck(int ButtonOffset)
 	CardFont = CreateFont(70, 0, 0, 0, 300, false, false, false, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, TEXT("Arial"));	
 }
 
-void Deck::ResizeDeck(HWND& hWnd)
+void Deck::ResizeDeck(const HWND& hWnd)
 {
 	RECT ClientRect;
 	int CurrentCardWidth;
@@ -25,8 +25,8 @@ void Deck::ResizeDeck(HWND& hWnd)
 	{
 		for (int n = 0; n < columns; n++)
 		{
-			Cards[i].left = CurrentCardWidth * n;
-			Cards[i].top = offset + CurrentCardHeight * m;
+			Cards[i].Left = CurrentCardWidth * n;
+			Cards[i].Top = offset + CurrentCardHeight * m;
 			Cards[i].CardWidth = CurrentCardWidth;
 			Cards[i].CardHeight = CurrentCardHeight;
 			
@@ -54,7 +54,7 @@ void Deck::NewGame()
 	State = 0;
 }
 
-void Deck::DrawDeck(HDC& hdc, HWND& hWnd)
+void Deck::DrawDeck(const HDC& hdc, const HWND& hWnd)
 {
 	ResizeDeck(hWnd);
 
@@ -62,15 +62,15 @@ void Deck::DrawDeck(HDC& hdc, HWND& hWnd)
 	{
 		if (Cards[i].Exposed == true)
 		{
-			Cards[i].Color = Cards[i].Blue;
+			Cards[i].Color = Blue;
 			
 		}
 		else
 		{
-			Cards[i].Color = Cards[i].Green;
+			Cards[i].Color = Green;
 		}
 
-		Cards[i].DrawCard(hdc, Cards[i].CardWidth, Cards[i].CardHeight, Cards[i].Color);
+		Cards[i].DrawCard(hdc, Cards[i].CardWidth, Cards[i].CardHeight);
 
 		if (Cards[i].Exposed == true) 
 		{
@@ -81,16 +81,16 @@ void Deck::DrawDeck(HDC& hdc, HWND& hWnd)
 	DrawTurns(hdc, hWnd);
 }
 
-void Deck::DrawTurns(HDC& hdc, HWND& hWnd)
+void Deck::DrawTurns(const HDC& hdc, const HWND& hWnd)
 {
-	std::wstring TurnsString = std::to_wstring(Turns);
+	TurnsNumber = std::to_wstring(Turns);
 
 	SetTextColor(hdc, RGB(0, 255, 0));
 	SetBkColor(hdc, RGB(0, 0, 0));
 	SelectObject(hdc, CardFont);
 
 	TextOut(hdc, 220, 5, TurnsMsg, _tcslen(TurnsMsg));
-	TextOut(hdc, 400, 5, TurnsString.c_str(), _tcslen(TurnsString.c_str()));
+	TextOut(hdc, 400, 5, TurnsNumber.c_str(), _tcslen(TurnsNumber.c_str()));
 	
 	if (Turns < 10)
 	{
@@ -102,19 +102,19 @@ void Deck::DrawTurns(HDC& hdc, HWND& hWnd)
 	InvalidateRect(hWnd, &TurnsRect, false);
 }
 
-void Deck::DrawNum(HDC& hdc, Card& card)
+void Deck::DrawNum(const HDC& hdc, const Card& card)
 {
-	std::wstring CardNumber = std::to_wstring(card.Number);
+	CardNumber = std::to_wstring(card.Number);
 
 	SetTextColor(hdc, RGB(255, 255, 255));
 	SetBkColor(hdc, card.Color);
 	SelectObject(hdc, CardFont);
 
-	RECT CardRect = card.GetRect();
+	CardRect = card.GetRect();
 	DrawText(hdc, CardNumber.c_str(), 1, &CardRect, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 }
 
-void Deck::CompareCards(HWND& hWnd, int Card)
+void Deck::CompareCards(const HWND& hWnd, int Card)
 {
 	if (Cards[Card].Exposed == false)
 	{
@@ -150,26 +150,26 @@ void Deck::CompareCards(HWND& hWnd, int Card)
 	}
 }
 
-void Deck::Card::DrawCard(HDC& hdc, int CardWidth, int CardHeight, COLORREF& CardColor)
+void Deck::Card::DrawCard(const HDC& hdc, int CardWidth, int CardHeight) const
 {
 	SelectObject(hdc, GetStockObject(DC_BRUSH));
-	SetDCBrushColor(hdc, CardColor);
-	Rectangle(hdc, left, top, left + CardWidth, top + CardHeight);			
+	SetDCBrushColor(hdc, Color);
+	Rectangle(hdc, Left, Top, Left + CardWidth, Top + CardHeight);			
 }
 
-void Deck::Card::Clicked(HWND& hWnd)
+void Deck::Clicked(const HWND& hWnd, int Card)
 {
-	RECT CardRect = GetRect();
+	CardRect = Cards[Card].GetRect();
 
 	InvalidateRect(hWnd, &CardRect, false);
 }
 
 RECT Deck::Card::GetRect() const
 {
-	return { left, top, left + CardWidth, top + CardHeight };
+	return { Left, Top, Left + CardWidth, Top + CardHeight };
 }
 
-int Deck::GetCardIndex(HWND& hWnd, int x, int y)
+int Deck::GetCardIndex(const HWND& hWnd, int x, int y) const
 {
 	RECT ClientRect;
 	::GetClientRect(hWnd, &ClientRect);
@@ -177,5 +177,5 @@ int Deck::GetCardIndex(HWND& hWnd, int x, int y)
 	int CurrentCardHeight = (ClientRect.bottom - ClientRect.top - offset) / 4;
 	int Card = (x / CurrentCardWidth) + ((y - offset) / CurrentCardHeight) * 5;
 
-	return Card;   
+	return Card;
 }
