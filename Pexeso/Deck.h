@@ -4,6 +4,7 @@
 #include <random>
 #include <tchar.h>
 #include <string> 
+#include <list>
 
 class Deck
 {
@@ -42,6 +43,7 @@ private:
 	static constexpr int columns = 5;
 	static constexpr int rows = 4;
 	std::vector<Card> Cards;   // vector of all cards in the deck
+	//std::list<Card> Cards;
 	int CardNums[20];
 	int offset;
 	int FirstCard;

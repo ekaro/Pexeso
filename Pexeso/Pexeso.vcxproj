@@ -22,7 +22,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{700906F7-15D5-44C7-A49D-961C335062C7}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>WindowApp</RootNamespace>
+    <RootNamespace>Pexeso</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
     <ProjectName>Pexeso</ProjectName>
   </PropertyGroup>
