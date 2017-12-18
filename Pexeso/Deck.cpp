@@ -6,7 +6,13 @@ Deck::Deck(int ButtonOffset)
 {
 	Cards.resize(20);
 	NewGame();
-	CardFont = CreateFont(70, 0, 0, 0, 300, false, false, false, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, TEXT("Arial"));	
+	//CardFont = CreateFont(70, 0, 0, 0, 300, false, false, false, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, TEXT("Arial"));	
+	
+	LOGFONT logFont;
+	memset(&logFont, 0, sizeof(logFont));
+	GetObject(CardFont, sizeof(logFont), &logFont);
+	logFont.lfHeight = 70;
+	CardFont = CreateFontIndirect(&logFont);
 }
 
 void Deck::ResizeDeck(const HWND& hWnd)
@@ -88,7 +94,7 @@ void Deck::DrawTurns(const HDC& hdc, const HWND& hWnd)
 	SetTextColor(hdc, RGB(0, 255, 0));
 	SetBkColor(hdc, RGB(0, 0, 0));
 	SelectObject(hdc, CardFont);
-
+	
 	TextOut(hdc, 220, 5, TurnsMsg, _tcslen(TurnsMsg));
 	TextOut(hdc, 400, 5, TurnsNumber.c_str(), _tcslen(TurnsNumber.c_str()));
 	
