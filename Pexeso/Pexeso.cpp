@@ -29,6 +29,11 @@ int RestartButtonWidth = 200;
 int RestartButtonHeight = offset;
 HWND RestartButton;
 
+int CurrentWidth;
+int CurrentHeight;
+int FontHeight;
+RECT ClientRect;
+
 Deck NewDeck(offset);
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
@@ -178,6 +183,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			NewDeck.Clicked(hWnd, Card);
 		}	
+		break;
+
+	case WM_SIZE:
+
+		//NewDeck.ResizeText(hWnd);
 		break;
 
 	case WM_DESTROY:

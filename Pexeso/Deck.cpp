@@ -6,13 +6,13 @@ Deck::Deck(int ButtonOffset)
 {
 	Cards.resize(20);
 	NewGame();
-	//CardFont = CreateFont(70, 0, 0, 0, 300, false, false, false, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, TEXT("Arial"));	
-	
+	CardFont = CreateFont(FontHeight, 0, 0, 0, 300, false, false, false, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, TEXT("Arial"));	
+	/*
 	LOGFONT logFont;
 	memset(&logFont, 0, sizeof(logFont));
 	GetObject(CardFont, sizeof(logFont), &logFont);
 	logFont.lfHeight = 70;
-	CardFont = CreateFontIndirect(&logFont);
+	CardFont = CreateFontIndirect(&logFont);*/
 }
 
 void Deck::ResizeDeck(const HWND& hWnd)
@@ -96,13 +96,16 @@ void Deck::DrawTurns(const HDC& hdc, const HWND& hWnd)
 	SelectObject(hdc, CardFont);
 	
 	TextOut(hdc, 220, 5, TurnsMsg, _tcslen(TurnsMsg));
-	TextOut(hdc, 400, 5, TurnsNumber.c_str(), _tcslen(TurnsNumber.c_str()));
+	TextOut(hdc, 330 + FontHeight, 5, TurnsNumber.c_str(), _tcslen(TurnsNumber.c_str()));
+
+	TurnsRect.left = 330 + FontHeight;
+	TurnsRect.right = 430 + FontHeight;
 	
 	if (Turns < 10)
 	{
 		SelectObject(hdc, GetStockObject(DC_BRUSH));
 		SetDCBrushColor(hdc, RGB(0, 0, 0));
-		Rectangle(hdc, 435, 5, 480, 75);
+		Rectangle(hdc, 365 + FontHeight, 5, 410 + FontHeight, 75);
 	}
 	
 	InvalidateRect(hWnd, &TurnsRect, false);
@@ -168,6 +171,18 @@ void Deck::Clicked(const HWND& hWnd, int Card)
 	CardRect = Cards[Card].GetRect();
 
 	InvalidateRect(hWnd, &CardRect, false);
+}
+
+void Deck::ResizeText(const HWND& hWnd)
+{
+	RECT ClientRect;
+	int CurrentHeight;
+
+	::GetClientRect(hWnd, &ClientRect);
+	CurrentHeight = ClientRect.bottom - ClientRect.top;
+
+	FontHeight = CurrentHeight / 10;
+	CardFont = CreateFont(FontHeight, 0, 0, 0, 300, false, false, false, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, TEXT("Arial"));
 }
 
 RECT Deck::Card::GetRect() const

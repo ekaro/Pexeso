@@ -34,10 +34,11 @@ public:
 	void CompareCards(const HWND& hWnd, int Card);
 	int GetCardIndex(const HWND& hWnd, int x, int y) const;   //returns index of card that has been clicked	
 	void Clicked(const HWND& hWnd, int Card);
+	void ResizeText(const HWND& hWnd);
 private:
 	static constexpr COLORREF Green = (RGB(0, 255, 0));
 	static constexpr COLORREF Blue = (RGB(0, 0, 255));
-	static constexpr RECT TurnsRect = { 400, 5, 500, 75};
+	RECT TurnsRect = { 330, 5, 430, 75};
 	static constexpr TCHAR TurnsMsg[] = _T("Turns:");
 	static constexpr int columns = 5;
 	static constexpr int rows = 4;
@@ -47,9 +48,10 @@ private:
 	int FirstCard;
 	int SecondCard;
 	int State;
-	int Turns;
-	HFONT CardFont;
+	int Turns;	
+	int FontHeight = 70;
 	RECT CardRect;
+	HFONT CardFont;
 	std::wstring CardNumber;
 	std::wstring TurnsNumber;
 	std::random_device rd;
