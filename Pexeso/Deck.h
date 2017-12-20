@@ -26,23 +26,25 @@ private:
 	};
 public:
 	Deck(int ButtonOffset);
+	~Deck();
 	void NewGame();
 	void DrawDeck(const HDC& hdc, const HWND& hWnd);    // drawing of every card in the deck
 	void ResizeDeck(const HWND& hWnd);		   // resizing of deck according to current size of the window		
-	void DrawNum(const HDC& hdc, const Card& card);
+	void DrawNum(const HDC& hdc, Card* card);
 	void DrawTurns(const HDC& hdc, const HWND& hWnd);
 	void CompareCards(const HWND& hWnd, int Card);
-	int GetCardIndex(const HWND& hWnd, int x, int y) const;   //returns index of card that has been clicked	
+	int GetCardIndex(const HWND& hWnd, int x, int y);   //returns index of card that has been clicked	
 	void Clicked(const HWND& hWnd, int Card);
 	void ResizeText(const HWND& hWnd);
+	std::pair<int, int> GetClientDimensions(const HWND& hWnd);
 private:
 	static constexpr COLORREF Green = (RGB(0, 255, 0));
 	static constexpr COLORREF Blue = (RGB(0, 0, 255));
-	RECT TurnsRect = { 330, 5, 430, 75};
+	RECT TurnsRect = { 400, 5, 500, 75};
 	static constexpr TCHAR TurnsMsg[] = _T("Turns:");
 	static constexpr int columns = 5;
 	static constexpr int rows = 4;
-	std::vector<Card> Cards;   // vector of all cards in the deck
+	std::vector<Card*> Cards;   // vector of all cards in the deck
 	int CardNums[20];
 	int offset;
 	int FirstCard;
@@ -52,6 +54,7 @@ private:
 	int FontHeight = 70;
 	RECT CardRect;
 	HFONT CardFont;
+	HFONT TurnsFont;
 	std::wstring CardNumber;
 	std::wstring TurnsNumber;
 	std::random_device rd;
