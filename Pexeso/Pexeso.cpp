@@ -2,38 +2,30 @@
 #include <Windowsx.h>
 #include "Deck.h"
 
-// Global variables
-
-// The main window class name
-static TCHAR szWindowClass[] = _T("WinApp");
-
-// The string in the title bar
-static TCHAR szTitle[] = _T("Pexeso");
-
 // Forward declaration of functions included in this module:
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
-// Colors
-HBRUSH hBrushBlack = CreateSolidBrush(RGB(0, 0, 0));
-
 // Window properties
-int offset = 100;
-int WindowWidth = 500;
-int WindowHeight = 600 + offset;
+int WindowWidth = 600;
+int WindowHeight = 700;
 
 int xPos;
 int yPos;
 int Card;
 
-int RestartButtonWidth = 200;
-int RestartButtonHeight = offset;
 HWND RestartButton;
 
-Deck NewDeck(offset);
+Deck NewDeck;
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	WNDCLASSEX wcex;
+
+	// The main window class name
+	const wchar_t szWindowClass[] = L"WinApp";
+
+	// The string in the title bar
+	static TCHAR szTitle[] = _T("Pexeso");
 
 	wcex.cbSize = sizeof(WNDCLASSEX);
 	wcex.style = CS_HREDRAW | CS_VREDRAW;
@@ -44,7 +36,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	wcex.hIcon = LoadIcon(hInstance, IDI_APPLICATION);
 	wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
 	// wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-	wcex.hbrBackground = hBrushBlack;
+	wcex.hbrBackground = CreateSolidBrush(RGB(0, 0, 0));
 	wcex.lpszMenuName = NULL;
 	wcex.lpszClassName = szWindowClass;
 	wcex.hIconSm = LoadIcon(wcex.hInstance, IDI_APPLICATION);
@@ -139,8 +131,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,  // Styles 
 			0,         // x position 
 			0,         // y position 
-			RestartButtonWidth,        // Button width
-			RestartButtonHeight,        // Button height
+			WindowWidth / 5,        // Button width
+			WindowHeight / 7,        // Button height
 			hWnd,     // Parent window
 			(HMENU) ID_BUTTON,       
 			NULL,
@@ -170,7 +162,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		xPos = GET_X_LPARAM(lParam);
 		yPos = GET_Y_LPARAM(lParam);
 
-		if (yPos > offset)
+		if (yPos > NewDeck.GetOffset())
 		{
 			Card = NewDeck.GetCardIndex(hWnd, xPos, yPos);
 
@@ -183,6 +175,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_SIZE:
 
 		NewDeck.ResizeText(hWnd);
+
+		SetWindowPos(RestartButton, NULL, 0, 0, NewDeck.GetClientDimensions(hWnd).first / 5, NewDeck.GetClientDimensions(hWnd).second / 7, SWP_NOZORDER | SWP_NOMOVE);
+		
 		break;
 
 	case WM_DESTROY:

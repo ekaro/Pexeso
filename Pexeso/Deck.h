@@ -25,7 +25,7 @@ private:
 		int Number;
 	};
 public:
-	Deck(int ButtonOffset);
+	Deck();
 	~Deck();
 	void NewGame();
 	void DrawDeck(const HDC& hdc, const HWND& hWnd);    // drawing of every card in the deck
@@ -37,6 +37,7 @@ public:
 	void Clicked(const HWND& hWnd, int Card);
 	void ResizeText(const HWND& hWnd);
 	std::pair<int, int> GetClientDimensions(const HWND& hWnd);
+	int GetOffset();
 private:
 	static constexpr COLORREF Green = (RGB(0, 255, 0));
 	static constexpr COLORREF Blue = (RGB(0, 0, 255));
@@ -46,7 +47,7 @@ private:
 	static constexpr int rows = 4;
 	std::vector<Card*> Cards;   // vector of all cards in the deck
 	int CardNums[20];
-	int offset;
+	int offset = 100;
 	int FirstCard;
 	int SecondCard;
 	int State;

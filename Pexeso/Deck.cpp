@@ -1,10 +1,8 @@
 #include "Deck.h"
 
-Deck::Deck(int ButtonOffset)
-	:
-	offset(ButtonOffset)
+Deck::Deck()
 {
-	//Cards.resize(20);
+	//Cards.resize(20);  this creates only vector of pointers pointing to nothing
 	Cards = { new Card, new Card, new Card, new Card, new Card, new Card, new Card, new Card, new Card, new Card, 
 			new Card, new Card, new Card, new Card, new Card, new Card, new Card, new Card, new Card, new Card };
 	NewGame();
@@ -24,6 +22,8 @@ void Deck::ResizeDeck(const HWND& hWnd)
 {
 	int CurrentCardWidth = (GetClientDimensions(hWnd).first) / 5;
 	int CurrentCardHeight = (GetClientDimensions(hWnd).second - offset) / 4;
+
+	offset = GetClientDimensions(hWnd).second / 7;
 
 	int i = 0;
 
@@ -95,15 +95,18 @@ void Deck::DrawTurns(const HDC& hdc, const HWND& hWnd)
 	SetBkColor(hdc, RGB(0, 0, 0));
 	SelectObject(hdc, TurnsFont);
 	
-	TextOut(hdc, 220, 5, TurnsMsg, _tcslen(TurnsMsg));
-	TextOut(hdc, 400, 5, TurnsNumber.c_str(), _tcslen(TurnsNumber.c_str()));
+	TextOut(hdc, GetClientDimensions(hWnd).first / 5, 5, TurnsMsg, _tcslen(TurnsMsg));
+	TextOut(hdc, GetClientDimensions(hWnd).first / 5 + 200, 5, TurnsNumber.c_str(), _tcslen(TurnsNumber.c_str()));
 	
 	if (Turns < 10)
 	{
 		SelectObject(hdc, GetStockObject(DC_BRUSH));
 		SetDCBrushColor(hdc, RGB(0, 0, 0));
-		Rectangle(hdc, 435, 5, 480, 75);
+		Rectangle(hdc, GetClientDimensions(hWnd).first / 5 + 235, 5, GetClientDimensions(hWnd).first / 5 + 280, 75);
 	}
+
+	TurnsRect.left =  GetClientDimensions(hWnd).first / 5 + 200;
+	TurnsRect.right = GetClientDimensions(hWnd).first / 5 + 300;
 	
 	InvalidateRect(hWnd, &TurnsRect, false);
 }
@@ -134,8 +137,7 @@ void Deck::CompareCards(const HWND& hWnd, int Card)
 		{
 			SecondCard = Card;
 			Cards[SecondCard]->Exposed = true;
-			State = 2;
-			
+			State = 2;	
 		}
 		else
 		{
@@ -187,6 +189,11 @@ std::pair<int, int> Deck::GetClientDimensions(const HWND& hWnd)
 	int CurrentHeight = ClientRect.bottom - ClientRect.top;
 
 	return { CurrentWidth, CurrentHeight };
+}
+
+int Deck::GetOffset()
+{
+	return offset;
 }
 
 RECT Deck::Card::GetRect() const
