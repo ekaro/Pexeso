@@ -7,7 +7,7 @@ Deck::Deck()
 			new Card, new Card, new Card, new Card, new Card, new Card, new Card, new Card, new Card, new Card };
 	NewGame();
 	CardFont = CreateFont(FontHeight, 0, 0, 0, 300, false, false, false, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, TEXT("Arial"));	
-	TurnsFont = CreateFont(70, 0, 0, 0, 300, false, false, false, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, TEXT("Arial"));
+	TurnsFont = CreateFont(FontHeight, 0, 0, 0, 300, false, false, false, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, TEXT("Arial"));
 }
 
 Deck::~Deck()
@@ -68,8 +68,7 @@ void Deck::DrawDeck(const HDC& hdc, const HWND& hWnd)
 	{
 		if (Cards[i]->Exposed == true)
 		{
-			Cards[i]->Color = Blue;
-			
+			Cards[i]->Color = Blue;			
 		}
 		else
 		{
@@ -93,20 +92,21 @@ void Deck::DrawTurns(const HDC& hdc, const HWND& hWnd)
 
 	SetTextColor(hdc, RGB(0, 255, 0));
 	SetBkColor(hdc, RGB(0, 0, 0));
-	SelectObject(hdc, TurnsFont);
+	SelectObject(hdc, CardFont);
 	
 	TextOut(hdc, GetClientDimensions(hWnd).first / 5, 5, TurnsMsg, _tcslen(TurnsMsg));
-	TextOut(hdc, GetClientDimensions(hWnd).first / 5 + 200, 5, TurnsNumber.c_str(), _tcslen(TurnsNumber.c_str()));
+	TextOut(hdc, GetClientDimensions(hWnd).first / 5 + FontHeight / 2 * 5 + FontHeight / 10, 5, TurnsNumber.c_str(), _tcslen(TurnsNumber.c_str()));
 	
 	if (Turns < 10)
 	{
 		SelectObject(hdc, GetStockObject(DC_BRUSH));
 		SetDCBrushColor(hdc, RGB(0, 0, 0));
-		Rectangle(hdc, GetClientDimensions(hWnd).first / 5 + 235, 5, GetClientDimensions(hWnd).first / 5 + 280, 75);
+		Rectangle(hdc, GetClientDimensions(hWnd).first / 5 + FontHeight / 2 * 5 + FontHeight / 10 + (FontHeight / 2), TurnsRect.top, GetClientDimensions(hWnd).first / 5 + FontHeight / 2 * 5 + FontHeight / 10 + (FontHeight / 2) * 2, TurnsRect.top + FontHeight);
 	}
 
-	TurnsRect.left =  GetClientDimensions(hWnd).first / 5 + 200;
-	TurnsRect.right = GetClientDimensions(hWnd).first / 5 + 300;
+	TurnsRect.left =  GetClientDimensions(hWnd).first / 5 + FontHeight / 2 * 5 + FontHeight / 10 - 1;
+	TurnsRect.right = GetClientDimensions(hWnd).first / 5 + FontHeight / 2 * 5 + FontHeight / 10 + (FontHeight / 2) * 2;
+	TurnsRect.bottom = TurnsRect.top + FontHeight;
 	
 	InvalidateRect(hWnd, &TurnsRect, false);
 }
@@ -176,7 +176,7 @@ void Deck::ResizeText(const HWND& hWnd)
 {
 	int CurrentHeight = GetClientDimensions(hWnd).second;
 
-	FontHeight = CurrentHeight / 8;
+	FontHeight = CurrentHeight / 10;
 	CardFont = CreateFont(FontHeight, 0, 0, 0, 300, false, false, false, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, TEXT("Arial"));
 }
 

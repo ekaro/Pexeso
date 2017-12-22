@@ -177,7 +177,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		NewDeck.ResizeText(hWnd);
 
 		SetWindowPos(RestartButton, NULL, 0, 0, NewDeck.GetClientDimensions(hWnd).first / 5, NewDeck.GetClientDimensions(hWnd).second / 7, SWP_NOZORDER | SWP_NOMOVE);
-		
 		break;
 
 	case WM_DESTROY:
