@@ -108,7 +108,7 @@ void Deck::DrawTurns(const HDC& hdc, const HWND& hWnd)
 	TurnsRect.right = GetClientDimensions(hWnd).first / 5 + FontHeight / 2 * 5 + FontHeight / 10 + (FontHeight / 2) * 2;
 	TurnsRect.bottom = TurnsRect.top + FontHeight;
 	
-	InvalidateRect(hWnd, &TurnsRect, false);
+	
 }
 
 void Deck::DrawNum(const HDC& hdc, Card* Card)
@@ -170,6 +170,7 @@ void Deck::Clicked(const HWND& hWnd, int Card)
 	CardRect = Cards[Card]->GetRect();
 
 	InvalidateRect(hWnd, &CardRect, false);
+	InvalidateRect(hWnd, &TurnsRect, false);
 }
 
 void Deck::ResizeText(const HWND& hWnd)

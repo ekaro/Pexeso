@@ -177,6 +177,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		NewDeck.ResizeText(hWnd);
 
 		SetWindowPos(RestartButton, NULL, 0, 0, NewDeck.GetClientDimensions(hWnd).first / 5, NewDeck.GetClientDimensions(hWnd).second / 7, SWP_NOZORDER | SWP_NOMOVE);
+
+		// cards resized after window is maximized
+		if (wParam == SIZE_MAXIMIZED)
+		{
+			NewDeck.ResizeDeck(hWnd);
+		}
+
+		if (wParam == SIZE_RESTORED)
+		{
+			NewDeck.ResizeDeck(hWnd);
+		}
 		break;
 
 	case WM_DESTROY:
