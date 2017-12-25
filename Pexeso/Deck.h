@@ -4,6 +4,7 @@
 #include <random>
 #include <tchar.h>
 #include <string> 
+#include <array>
 
 class Deck
 {
@@ -45,7 +46,8 @@ private:
 	static constexpr TCHAR TurnsMsg[] = _T("Turns:");
 	static constexpr int columns = 5;
 	static constexpr int rows = 4;
-	std::vector<Card*> Cards;   // vector of all cards in the deck
+	//std::vector<Card*> Cards;   // std::array is compile-time fixed in size, while std::vector is variable size
+	std::array<Card*, 20> Cards;
 	int CardNums[20];
 	int offset = 100;
 	int FirstCard;

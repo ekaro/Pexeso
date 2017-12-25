@@ -1,17 +1,19 @@
 #include "Deck.h"
 
 Deck::Deck()
-{
-	//Cards.resize(20);  this creates only vector of pointers pointing to nothing
-	Cards = { new Card, new Card, new Card, new Card, new Card, new Card, new Card, new Card, new Card, new Card, 
-			new Card, new Card, new Card, new Card, new Card, new Card, new Card, new Card, new Card, new Card };
+{		 
+	for (int i = 0; i < Cards.size(); i++)
+	{
+		Cards[i] = new Card;
+	}
+
 	NewGame();
 	CardFont = CreateFont(FontHeight, 0, 0, 0, 300, false, false, false, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, TEXT("Arial"));	
 }
 
 Deck::~Deck()
 {
-	for (size_t i = 0; i < Cards.size(); i++)
+	for (size_t i = 0; i < Cards.size(); i++) 
 	{
 		delete Cards[i];
 	}
@@ -63,7 +65,7 @@ void Deck::DrawDeck(const HDC& hdc, const HWND& hWnd)
 {
 	ResizeDeck(hWnd);
 
-	for (int i = 0; i < 20; i++)
+	for (int i = 0; i < Cards.size(); i++)
 	{
 		if (Cards[i]->Exposed == true)
 		{
