@@ -108,8 +108,6 @@ void Deck::DrawTurns(const HDC& hdc, const HWND& hWnd)
 	TurnsRect.left =  GetClientDimensions(hWnd).first / 5 + FontHeight / 2 * 5 + FontHeight / 10 - 1;
 	TurnsRect.right = GetClientDimensions(hWnd).first / 5 + FontHeight / 2 * 5 + FontHeight / 10 + (FontHeight / 2) * 2;
 	TurnsRect.bottom = TurnsRect.top + FontHeight;
-	
-	
 }
 
 void Deck::DrawNum(const HDC& hdc, Card* Card)
