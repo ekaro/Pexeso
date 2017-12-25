@@ -55,7 +55,6 @@ private:
 	int FontHeight = 70;
 	RECT CardRect;
 	HFONT CardFont;
-	HFONT TurnsFont;
 	std::wstring CardNumber;
 	std::wstring TurnsNumber;
 	std::random_device rd;

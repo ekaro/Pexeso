@@ -7,7 +7,6 @@ Deck::Deck()
 			new Card, new Card, new Card, new Card, new Card, new Card, new Card, new Card, new Card, new Card };
 	NewGame();
 	CardFont = CreateFont(FontHeight, 0, 0, 0, 300, false, false, false, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, TEXT("Arial"));	
-	TurnsFont = CreateFont(FontHeight, 0, 0, 0, 300, false, false, false, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, TEXT("Arial"));
 }
 
 Deck::~Deck()
@@ -96,7 +95,7 @@ void Deck::DrawTurns(const HDC& hdc, const HWND& hWnd)
 	
 	TextOut(hdc, GetClientDimensions(hWnd).first / 5, 5, TurnsMsg, _tcslen(TurnsMsg));
 	TextOut(hdc, GetClientDimensions(hWnd).first / 5 + FontHeight / 2 * 5 + FontHeight / 10, 5, TurnsNumber.c_str(), _tcslen(TurnsNumber.c_str()));
-	
+
 	if (Turns < 10)
 	{
 		SelectObject(hdc, GetStockObject(DC_BRUSH));

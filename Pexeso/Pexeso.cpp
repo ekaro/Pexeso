@@ -120,6 +120,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	PAINTSTRUCT ps;
 	HDC hdc;
 	TCHAR display_msg[] = _T("Message in window");
+	HFONT ButtonFont;
+	int FontHeight; 
 
 	switch (message)
 	{
@@ -177,6 +179,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		NewDeck.ResizeText(hWnd);
 
 		SetWindowPos(RestartButton, NULL, 0, 0, NewDeck.GetClientDimensions(hWnd).first / 5, NewDeck.GetClientDimensions(hWnd).second / 7, SWP_NOZORDER | SWP_NOMOVE);
+
+		FontHeight = NewDeck.GetClientDimensions(hWnd).second / 30;
+		ButtonFont = CreateFont(FontHeight, 0, 0, 0, 300, false, false, false, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, TEXT("Arial"));
+		SendMessage(RestartButton, WM_SETFONT, WPARAM(ButtonFont), TRUE);
 
 		// cards resized after window is maximized
 		if (wParam == SIZE_MAXIMIZED)
