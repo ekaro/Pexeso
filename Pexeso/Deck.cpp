@@ -2,7 +2,7 @@
 
 Deck::Deck()
 {		 
-	for (int i = 0; i < Cards.size(); i++)
+	for (size_t i = 0; i < Cards.size(); i++)
 	{
 		Cards[i] = new Card;
 	}
@@ -44,14 +44,14 @@ void Deck::ResizeDeck(const HWND& hWnd)
 
 void Deck::NewGame()
 {
-	for (int i = 0; i < Cards.size(); i++)
+	for (size_t i = 0; i < Cards.size(); i++)
 	{
 		CardNums[i] = i % 10;
 	}
 
 	std::shuffle(std::begin(CardNums), std::end(CardNums), rng);
 
-	for (int i = 0; i < Cards.size(); i++)
+	for (size_t i = 0; i < Cards.size(); i++)
 	{
 		Cards[i]->Number = CardNums[i];
 		Cards[i]->Exposed = false;
@@ -65,7 +65,7 @@ void Deck::DrawDeck(const HDC& hdc, const HWND& hWnd)
 {
 	ResizeDeck(hWnd);
 
-	for (int i = 0; i < Cards.size(); i++)
+	for (size_t i = 0; i < Cards.size(); i++)
 	{
 		if (Cards[i]->Exposed == true)
 		{
