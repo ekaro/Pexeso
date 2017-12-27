@@ -7,8 +7,7 @@ Deck::Deck()
 		Cards[i] = new Card;
 	}
 
-	NewGame();
-	CardFont = CreateFont(FontHeight, 0, 0, 0, 300, false, false, false, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, TEXT("Arial"));	
+	NewGame();	
 }
 
 Deck::~Deck()
@@ -177,6 +176,7 @@ void Deck::ResizeText(const HWND& hWnd)
 	int CurrentHeight = GetClientDimensions(hWnd).second;
 
 	FontHeight = CurrentHeight / 10;
+	DeleteObject(CardFont);   // delete previous font (GDI object) to prevent memory leak
 	CardFont = CreateFont(FontHeight, 0, 0, 0, 300, false, false, false, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, TEXT("Arial"));
 }
 
