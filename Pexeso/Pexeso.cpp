@@ -180,7 +180,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		SetWindowPos(RestartButton, NULL, 0, 0, NewDeck.GetClientDimensions(hWnd).first / 5, NewDeck.GetClientDimensions(hWnd).second / 7, SWP_NOZORDER | SWP_NOMOVE);
 
-		FontHeight = NewDeck.GetClientDimensions(hWnd).second / 30;
+		FontHeight = (NewDeck.GetClientDimensions(hWnd).first + NewDeck.GetClientDimensions(hWnd).second) / 60;
 		DeleteObject(ButtonFont);   // delete previous font (GDI object) to prevent memory leak
 		ButtonFont = CreateFont(FontHeight, 0, 0, 0, 300, false, false, false, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, TEXT("Arial"));
 		SendMessage(RestartButton, WM_SETFONT, WPARAM(ButtonFont), TRUE);
