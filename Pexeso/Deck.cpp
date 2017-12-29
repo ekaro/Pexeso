@@ -66,7 +66,7 @@ void Deck::DrawDeck(const HDC& hdc, const HWND& hWnd)
 
 	for (size_t i = 0; i < Cards.size(); i++)
 	{
-		if (Cards[i]->Exposed == true)
+		if (Cards[i]->Exposed)
 		{
 			Cards[i]->Color = Blue;			
 		}
@@ -77,7 +77,7 @@ void Deck::DrawDeck(const HDC& hdc, const HWND& hWnd)
 
 		Cards[i]->DrawCard(hdc, Cards[i]->CardWidth, Cards[i]->CardHeight);
 
-		if (Cards[i]->Exposed == true)
+		if (Cards[i]->Exposed)
 		{
 			DrawNum(hdc, Cards[i]);
 		}			
@@ -93,19 +93,21 @@ void Deck::DrawTurns(const HDC& hdc, const HWND& hWnd)
 	SetTextColor(hdc, RGB(0, 255, 0));
 	SetBkColor(hdc, RGB(0, 0, 0));
 	SelectObject(hdc, CardFont);
+
+	int TurnsDistance = GetClientDimensions(hWnd).first / 5 + 10 + FontHeight / 2 * 5 + FontHeight / 10;
 	
-	TextOut(hdc, GetClientDimensions(hWnd).first / 5, 5, TurnsMsg, _tcslen(TurnsMsg));
-	TextOut(hdc, GetClientDimensions(hWnd).first / 5 + FontHeight / 2 * 5 + FontHeight / 10, 5, TurnsNumber.c_str(), _tcslen(TurnsNumber.c_str()));
+	TextOut(hdc, GetClientDimensions(hWnd).first / 5 + 10, GetClientDimensions(hWnd).second / 50, TurnsMsg, _tcslen(TurnsMsg));
+	TextOut(hdc, TurnsDistance, GetClientDimensions(hWnd).second / 50, TurnsNumber.c_str(), _tcslen(TurnsNumber.c_str()));
 
 	if (Turns < 10)
 	{
 		SelectObject(hdc, GetStockObject(DC_BRUSH));
 		SetDCBrushColor(hdc, RGB(0, 0, 0));
-		Rectangle(hdc, GetClientDimensions(hWnd).first / 5 + FontHeight / 2 * 5 + FontHeight / 10 + (FontHeight / 2), TurnsRect.top, GetClientDimensions(hWnd).first / 5 + FontHeight / 2 * 5 + FontHeight / 10 + (FontHeight / 2) * 2, TurnsRect.top + FontHeight);
+		Rectangle(hdc, TurnsDistance + (FontHeight / 2), TurnsRect.top, TurnsDistance + (FontHeight / 2) * 2, TurnsRect.top + FontHeight);
 	}
 
-	TurnsRect.left =  GetClientDimensions(hWnd).first / 5 + FontHeight / 2 * 5 + FontHeight / 10 - 1;
-	TurnsRect.right = GetClientDimensions(hWnd).first / 5 + FontHeight / 2 * 5 + FontHeight / 10 + (FontHeight / 2) * 2;
+	TurnsRect.left = TurnsDistance - 1;
+	TurnsRect.right = TurnsDistance + (FontHeight / 2) * 2;
 	TurnsRect.bottom = TurnsRect.top + FontHeight;
 }
 
@@ -177,7 +179,10 @@ void Deck::ResizeText(const HWND& hWnd)
 
 	FontHeight = CurrentHeight / 10;
 	DeleteObject(CardFont);   // delete previous font (GDI object) to prevent memory leak
-	CardFont = CreateFont(FontHeight, 0, 0, 0, 300, false, false, false, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, TEXT("Arial"));
+
+	memset(&logFont, 0, sizeof(logFont));
+	logFont.lfHeight = FontHeight;	
+	CardFont = CreateFontIndirect(&logFont);
 }
 
 std::pair<int, int> Deck::GetClientDimensions(const HWND& hWnd)

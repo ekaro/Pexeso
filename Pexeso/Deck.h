@@ -21,9 +21,9 @@ private:
 		int Left;
 		int Top;
 		int CardWidth;
-		int CardHeight;	
-		bool Exposed = false;
-		int Number;
+		int CardHeight;
+		int Number;	
+		bool Exposed;	
 	};
 public:
 	Deck();
@@ -42,21 +42,22 @@ public:
 private:
 	static constexpr COLORREF Green = (RGB(0, 255, 0));
 	static constexpr COLORREF Blue = (RGB(0, 0, 255));
-	RECT TurnsRect = { 400, 5, 500, 75};
+	static constexpr COLORREF Red = (RGB(255, 0, 0));
 	static constexpr TCHAR TurnsMsg[] = _T("Turns:");
 	static constexpr int columns = 5;
 	static constexpr int rows = 4;
-	//std::vector<Card*> Cards;       // std::vector is variable in size, std::array is compile-time fixed in size
-	std::array<Card*, 20> Cards;
+	std::array<Card*, 20> Cards;    //or std::vector<Card*> Cards;  std::vector is variable in size, std::array is compile-time fixed in size
 	int CardNums[20];
-	int offset = 100;
+	int offset;
 	int FirstCard;
 	int SecondCard;
 	int State;
 	int Turns;	
-	int FontHeight = 70;
+	int FontHeight;
+	RECT TurnsRect = { 400, 5, 500, 75};
 	RECT CardRect;
 	HFONT CardFont;
+	LOGFONT logFont;
 	std::wstring CardNumber;
 	std::wstring TurnsNumber;
 	std::random_device rd;
